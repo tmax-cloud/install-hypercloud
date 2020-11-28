@@ -52,7 +52,11 @@ HyperAuth
     ```
     * install yaml을 다운로드한다.
     ```bash
+    # hypercloud-operator
     $ wget -O hypercloud-operator.tar.gz https://github.com/tmax-cloud/hypercloud-operator/archive/v${HPCD_VERSION}.tar.gz
+    
+    # hypercloud-webhook
+    $ mv hypercloud-webhook-manifest ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}
     ```
   
 2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
@@ -222,12 +226,20 @@ HyperAuth
 * 목적: `Audit Webhook 연동 설정 파일 적용`
 * 주의: 마스터 다중화일 경우 모든 마스터에서 진행한다
 * 실행: /etc/kubernetes/manifests/kube-apiserver.yaml을 아래와 같이 수정한다.
-	```
-	spec.containers.command:
-	- --audit-log-path=/var/log/kubernetes/apiserver/audit.log
-	- --audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml
-	- --audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config
-	spec.dnsPolicy: ClusterFirstWithHostNet
-	```
+   ```bash
+   spec.containers.command:
+      - --audit-log-path=/var/log/kubernetes/apiserver/audit.log
+      - --audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml
+      - --audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config
+   spec.dnsPolicy: ClusterFirstWithHostNet
+   ```
+	
+## Step 7.  test-yaml 배포
+* 목적: `Webhook Server 동작 검증`
+* 실행: Annotation에 creator/updater/createdTime/updatedTime 필드가 생성 되었는지 확인한다.
+  ```bash
+  $ kubectl apply -f ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/test-yaml/namespaceclaim.yaml
+  $ kubectl describe namespaceclaim example-namespace-webhook
+  ```
 
 ## 삭제 가이드
