@@ -175,41 +175,42 @@ HyperAuth
 	$ kubectl apply -f ${HPCD_HOME}/hypercloud-operator-${HPCD_VERSION}/_yaml_Install/4.hypercloud4-operator.yaml
 	```
 
+
 ## Hypercloud Webhook 설치 가이드
-1. [hypercloud4-webhook yaml 수정](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
-2. [Secret 생성](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+1. [Secret 생성](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+2. [hypercloud4-webhook yaml 수정](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
 3. [HyperCloud Webhook Server 배포](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
 4. [HyperCloud Webhook Config 생성 및 적용](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
 5. [HyperCloud Audit Webhook Config 생성](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
 5. [HyperCloud Audit Webhook Config 적용](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
 
-## Step 1. hypercloud4-webhook yaml 수정
+## Step 1. Secret 생성
+* 목적: `Hypercloud webhook 서버를 위한 인증서를 Secret으로 생성`
+* 실행: 
+    ```bash
+    $ kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
+    ```
+   
+## Step 2. hypercloud4-webhook yaml 수정
 * 목적: `hypercloud-webhook yaml에 이미지 정보를 수정`
 * 실행: 
     ```bash
     $ sed -i 's/{HPCD_WEBHOOK_VERSION}/'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_webhook-deployment.yaml
     ```
 
-## Step 2. Secret 생성
-* 목적: `Hypercloud webhook 서버를 위한 인증서를 Secret으로 생성`
-* 실행: 
-    ```bash
-    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_create_secret.sh
-    ```
-
 ## Step 3. HyperCloud Webhook Server 배포
 * 목적: `HyperCloud Webhook의 deployment, service 배포`
 * 실행: 
     ```bash
-    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_webhook-deployment.yaml
+    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
     ```
 
 ## Step 4. HyperCloud Webhook Config 생성 및 적용
 * 목적: `Kube-apiserver와 Webhook 연동 설정 파일 생성 및 적용`
 * 실행: 
     ```bash
-    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_gen-webhook-config.sh
-    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/04_webhook-configuration.yaml
+    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
+    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
     ```
 
 ## Step 5.  HyperCloud Audit Webhook Config 생성
@@ -217,9 +218,9 @@ HyperAuth
 * 주의: 마스터 다중화일 경우 모든 마스터에서 진행한다
 * 실행: 
     ```bash
-    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/05_gen-audit-config.sh
-    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/06_audit-webhook-config /etc/kubernetes/pki/audit-webhook-config
-    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/07_audit-policy.yaml /etc/kubernetes/pki/audit-policy.yaml
+    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/04_gen-audit-config.sh
+    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/05_audit-webhook-config /etc/kubernetes/pki/audit-webhook-config
+    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/06_audit-policy.yaml /etc/kubernetes/pki/audit-policy.yaml
     ```
 
 ## Step 6.  HyperCloud Audit Webhook Config 적용
