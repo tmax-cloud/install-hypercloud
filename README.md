@@ -196,7 +196,7 @@ HyperAuth
 * 실행: 
     ```bash
     $ sed -i 's/tmaxcloudck\/hypercloud-webhook/'${REGISTRY}'\/tmaxcloudck\/hypercloud-webhook/g' ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
-    $ sed -i 's/{HPCD_WEBHOOK_VERSION}/'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    $ sed -i 's/{HPCD_WEBHOOK_VERSION}/b'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
     ```
 
 ## Step 3. HyperCloud Webhook Server 배포
