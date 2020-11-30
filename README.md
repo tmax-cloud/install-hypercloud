@@ -59,7 +59,7 @@ HyperAuth
     $ git clone https://github.com/tmax-cloud/install-hypercloud.git
     ```
   
-2. 위의 과정에서 생성한 tar 파일들과 manifest 디렉토리를 `폐쇄망 환경의 $HPCD_HOME으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
+2. 위의 과정에서 생성한 tar 파일들과 install-hypercloud/manifest 디렉토리를 `폐쇄망 환경의 $HPCD_HOME으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
 	* 작업 디렉토리 생성 및 환경 설정
     ```bash
 	$ mkdir -p ~/hypercloud-install
