@@ -56,7 +56,7 @@ HyperAuth
     $ wget -O hypercloud-operator.tar.gz https://github.com/tmax-cloud/hypercloud-operator/archive/v${HPCD_VERSION}.tar.gz
     
     # hypercloud-webhook
-    $ mv hypercloud-webhook-manifest ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}
+    $ wget -O hypercloud-webhook.tar.gz https://github.com/tmax-cloud/hypercloud-webhook/archive/v${HPCD_WEBHOOK_VERSION}.tar.gz
     ```
   
 2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
@@ -188,6 +188,8 @@ HyperAuth
 * 목적: `Hypercloud webhook 서버를 위한 인증서를 Secret으로 생성`
 * 실행: 
     ```bash
+    $ cd ${HPCD_HOME}
+    $ tar -xvzf hypercloud-webhook.tar.gz
     $ kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
     ```
    
