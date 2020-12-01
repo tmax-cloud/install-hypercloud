@@ -157,5 +157,11 @@ HyperAuth
 	$ kubectl apply -f ${HPCD_HOME}/hypercloud-operator-${HPCD_VERSION}/_yaml_Install/4.hypercloud4-operator.yaml
 	```
 
+## Step 6. 기본 권한 부여
+* 목적: `HyperCloud 관리자 계정에게 권한 부여`	
+* 실행: 
+	```bash
+	$ kubectl apply -f ${HPCD_HOME}/manifest/08_default-auth-object-init.yaml
+	```
 
 ## 삭제 가이드
