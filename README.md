@@ -59,7 +59,7 @@ HyperAuth
     $ git clone https://github.com/tmax-cloud/install-hypercloud.git
     ```
   
-2. 위의 과정에서 생성한 tar 파일들과 install-hypercloud/manifest 디렉토리를 `폐쇄망 환경의 $HPCD_HOME으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
+2. 위의 과정에서 생성한 tar 파일들과 install-hypercloud/manifest 디렉토리를 `폐쇄망 환경의 $HPCD_HOME으로 이동`시키고 사용하려는 registry에 이미지를 push한다.
 	* 작업 디렉토리 생성 및 환경 설정
     ```bash
 	$ mkdir -p ~/hypercloud-install
@@ -189,31 +189,31 @@ HyperAuth
 * 실행: 
     ```bash
     $ cd ${HPCD_HOME}
-    $ mv manifest hypercloud-webhook-${HPCD_WEBHOOK_VERSION}
-    $ kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
+    $ mv manifest/hypercloud-webhook manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}
+    $ kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
     ```
    
 ## Step 2. hypercloud4-webhook yaml 수정
 * 목적: `hypercloud-webhook yaml에 이미지 정보를 수정`
 * 실행: 
     ```bash
-    $ sed -i 's/tmaxcloudck\/hypercloud-webhook/'${REGISTRY}'\/tmaxcloudck\/hypercloud-webhook/g' ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
-    $ sed -i 's/{HPCD_WEBHOOK_VERSION}/b'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    $ sed -i 's/tmaxcloudck\/hypercloud-webhook/'${REGISTRY}'\/tmaxcloudck\/hypercloud-webhook/g' ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    $ sed -i 's/{HPCD_WEBHOOK_VERSION}/b'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
     ```
 
 ## Step 3. HyperCloud Webhook Server 배포
 * 목적: `HyperCloud Webhook의 deployment, service 배포`
 * 실행: 
     ```bash
-    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
     ```
 
 ## Step 4. HyperCloud Webhook Config 생성 및 적용
 * 목적: `Kube-apiserver와 Webhook 연동 설정 파일 생성 및 적용`
 * 실행: 
     ```bash
-    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
-    $ kubectl apply -f  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
+    $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
+    $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
     ```
 
 ## Step 5.  HyperCloud Audit Webhook Config 생성
@@ -221,9 +221,9 @@ HyperAuth
 * 주의: 마스터 다중화일 경우 모든 마스터에서 진행한다
 * 실행: 
     ```bash
-    $ sh  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/04_gen-audit-config.sh
-    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/05_audit-webhook-config /etc/kubernetes/pki/audit-webhook-config
-    $ cp  ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/06_audit-policy.yaml /etc/kubernetes/pki/audit-policy.yaml
+    $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/04_gen-audit-config.sh
+    $ cp  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/05_audit-webhook-config /etc/kubernetes/pki/audit-webhook-config
+    $ cp  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/06_audit-policy.yaml /etc/kubernetes/pki/audit-policy.yaml
     ```
 
 ## Step 6.  HyperCloud Audit Webhook Config 적용
@@ -242,7 +242,7 @@ HyperAuth
 * 목적: `Webhook Server 동작 검증`
 * 실행: Annotation에 creator/updater/createdTime/updatedTime 필드가 생성 되었는지 확인한다.
   ```bash
-  $ kubectl apply -f ${HPCD_HOME}/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/test-yaml/namespaceclaim.yaml
+  $ kubectl apply -f ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/test-yaml/namespaceclaim.yaml
   $ kubectl describe namespaceclaim example-namespace-webhook
   ```
 
