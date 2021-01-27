@@ -56,7 +56,7 @@ HyperAuth
     $ wget -O hypercloud-operator.tar.gz https://github.com/tmax-cloud/hypercloud-operator/archive/v${HPCD_VERSION}.tar.gz
     
     # hypercloud-webhook
-    $ git clone https://github.com/tmax-cloud/install-hypercloud.git -
+    $ git clone https://github.com/tmax-cloud/install-hypercloud.git -b 4.1
     ```
   
 2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
