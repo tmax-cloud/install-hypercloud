@@ -222,6 +222,7 @@ HyperAuth
 * 목적: `Kube-apiserver와 Webhook 연동 설정 파일 생성 및 적용`
 * 실행: 
     ```bash
+    $ chmod +x ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/*.sh
     $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
     $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
     ```
