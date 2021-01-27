@@ -62,8 +62,8 @@ HyperAuth
 2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
 	* 작업 디렉토리 생성 및 환경 설정
     ```bash
-	$ mkdir -p ~/hypercloud-operator-install
-	$ export HPCD_HOME=~/hypercloud-operator-install
+	$ mkdir -p ~/hypercloud-install
+	$ export HPCD_HOME=~/hypercloud-install
 	$ export HPCD_VERSION=<tag1>
 	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ export REGISTRY=<REGISTRY_IP_PORT>
