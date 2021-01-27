@@ -7,7 +7,8 @@
 	* image: [https://hub.docker.com/r/tmaxcloudck/hypercloud-operator/tags](https://hub.docker.com/r/tmaxcloudck/hypercloud-operator/tags)
 	* git: [https://github.com/tmax-cloud/hypercloud-operator](https://github.com/tmax-cloud/hypercloud-operator)
 * hypercloud-webhook 
-    * ([tmaxcloudck/hypercloud-webhook:b4.1.0.22](https://hub.docker.com/layers/tmaxcloudck/hypercloud-webhook/b4.1.0.22/images/sha256-ba70e762c512fd42aa5a7aad6efe574e01cdbbcc99ab6f6c0484cb0dee4c0f9b?context=explore)) 
+	* image: [https://hub.docker.com/r/tmaxcloudck/hypercloud-webhook/tags](https://hub.docker.com/r/tmaxcloudck/hypercloud-webhook/tags)
+	* git: [https://github.com/tmax-cloud/hypercloud-webhook/tree/java](https://github.com/tmax-cloud/hypercloud-webhook/tree/java)
 
 ## Prerequisite
 HyperAuth
@@ -22,10 +23,13 @@ HyperAuth
 	$ mkdir -p ~/hypercloud-operator-install
 	$ export HPCD_HOME=~/hypercloud-operator-install
 	$ export HPCD_VERSION=<tag1>
+	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ cd ${HPCD_HOME}
 
 	* <tag1>에는 설치할 hypercloud-operator 버전 명시
 		예시: $ export HPCD_VERSION=4.1.4.7
+	* <tag2>에는 설치할 hypercloud-webhook 버전 명시
+		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.22		
     ```
     * 외부 네트워크 통신이 가능한 환경에서 필요한 이미지를 다운받는다.
     ```bash
@@ -40,10 +44,19 @@ HyperAuth
 	# hypercloud-operator
 	$ sudo docker pull tmaxcloudck/hypercloud-operator:b${HPCD_VERSION}
 	$ sudo docker save tmaxcloudck/hypercloud-operator:b${HPCD_VERSION} > hypercloud-operator_b${HPCD_VERSION}.tar
+	
+	# hypercloud-webhook
+	$ sudo docker pull tmaxcloudck/hypercloud-webhook:b${HPCD_WEBHOOK_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-webhook:b${HPCD_WEBHOOK_VERSION} > hypercloud-webhook_b${HPCD_WEBHOOK_VERSION}.tar
+	
     ```
     * install yaml을 다운로드한다.
     ```bash
+    # hypercloud-operator
     $ wget -O hypercloud-operator.tar.gz https://github.com/tmax-cloud/hypercloud-operator/archive/v${HPCD_VERSION}.tar.gz
+    
+    # hypercloud-webhook
+    $ git clone https://github.com/tmax-cloud/install-hypercloud.git
     ```
   
 2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
@@ -52,11 +65,14 @@ HyperAuth
 	$ mkdir -p ~/hypercloud-operator-install
 	$ export HPCD_HOME=~/hypercloud-operator-install
 	$ export HPCD_VERSION=<tag1>
+	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ export REGISTRY=<REGISTRY_IP_PORT>
 	$ cd ${HPCD_HOME}
 
 	* <tag1>에는 설치할 hypercloud-operator 버전 명시
 		예시: $ export HPCD_VERSION=4.1.4.7
+	* <tag2>에는 설치할 hypercloud-webhook 버전 명시
+		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.22
 	* <REGISTRY_IP_PORT>에는 폐쇄망 Docker Registry IP:PORT명시
 		예시: $ export REGISTRY=192.168.6.110:5000
 	```
@@ -66,16 +82,19 @@ HyperAuth
     $ sudo docker load < mysql_5.6.tar
 	$ sudo docker load < registry_2.6.2.tar
 	$ sudo docker load < hypercloud-operator_b${HPCD_VERSION}.tar
+	$ sudo docker load < hypercloud-webhook_b${HPCD_WEBHOOK_VERSION}.tar
     
     # Change Image's Tag For Private Registry
     $ sudo docker tag mysql:5.6 ${REGISTRY}/mysql:5.6
 	$ sudo docker tag registry:2.6.2 ${REGISTRY}/registry:2.6.2
 	$ sudo docker tag tmaxcloudck/hypercloud-operator:b${HPCD_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-operator:b${HPCD_VERSION}
+	$ sudo docker tag tmaxcloudck/hypercloud-webhook:b${HPCD_WEBHOOK_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-webhook:b${HPCD_WEBHOOK_VERSION}
     
     # Push Images
     $ sudo docker push ${REGISTRY}/mysql:5.6
 	$ sudo docker push ${REGISTRY}/registry:2.6.2
 	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-operator:b${HPCD_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-webhook:b${HPCD_WEBHOOK_VERSION}
     ```
 ## Optional
 1.  Nginx Ingress Controller 설치
@@ -108,7 +127,6 @@ HyperAuth
 
 		$ sed -i 's/{HPCD_VERSION}/'b${HPCD_VERSION}'/g' ${HPCD_HOME}/hypercloud-operator-${HPCD_VERSION}/_yaml_Install/4.hypercloud4-operator.yaml
 		```
-
 
 ## Step 1. 1.initialization.yaml 실행
 * 목적 : `hypercloud4-system namespace, resourcequota, clusterrole, clusterrolebinding, serviceaccount, configmap 생성`
@@ -165,3 +183,78 @@ HyperAuth
 	```
 
 ## 삭제 가이드
+
+
+## Hypercloud Webhook 설치 가이드
+1. [Secret 생성](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+2. [hypercloud webhook yaml 수정](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+3. [HyperCloud Webhook Server 배포](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+4. [HyperCloud Webhook Config 생성 및 적용](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+5. [HyperCloud Audit Webhook Config 생성](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+6. [HyperCloud Audit Webhook Config 적용](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+6. [test-yaml ](#step-5-4hypercloud4-operatoryaml-%EC%8B%A4%ED%96%89)
+
+## Step 1. Secret 생성
+* 목적: `Hypercloud webhook 서버를 위한 인증서를 Secret으로 생성`
+* 실행: 
+    ```bash
+    $ cd ${HPCD_HOME}
+    $ mv manifest/hypercloud-webhook manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}
+    $ kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
+    ```
+    
+## Step 2. hypercloud-webhook yaml 수정
+* 목적: `hypercloud-webhook yaml에 이미지 정보를 수정`
+* 실행: 
+    ```bash
+    $ sed -i 's/tmaxcloudck\/hypercloud-webhook/'${REGISTRY}'\/tmaxcloudck\/hypercloud-webhook/g' ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    $ sed -i 's/{HPCD_WEBHOOK_VERSION}/b'${HPCD_WEBHOOK_VERSION}'/g'  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    ```
+
+## Step 3. HyperCloud Webhook Server 배포
+* 목적: `HyperCloud Webhook의 deployment, service 배포`
+* 실행: 
+    ```bash
+    $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/01_webhook-deployment.yaml
+    ```
+
+## Step 4. HyperCloud Webhook Config 생성 및 적용
+* 목적: `Kube-apiserver와 Webhook 연동 설정 파일 생성 및 적용`
+* 실행: 
+    ```bash
+    $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
+    $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
+    ```
+
+## Step 5.  HyperCloud Audit Webhook Config 생성
+* 목적: `Audit Webhook 연동 설정 파일 생성`
+* 주의: 마스터 다중화일 경우 모든 마스터에서 진행한다
+* 실행: 
+    ```bash
+    $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/04_gen-audit-config.sh
+    $ cp  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/05_audit-webhook-config /etc/kubernetes/pki/audit-webhook-config
+    $ cp  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/06_audit-policy.yaml /etc/kubernetes/pki/audit-policy.yaml
+    ```
+
+## Step 6.  HyperCloud Audit Webhook Config 적용
+* 목적: `Audit Webhook 연동 설정 파일 적용`
+* 주의: 마스터 다중화일 경우 모든 마스터에서 진행한다
+* 실행: /etc/kubernetes/manifests/kube-apiserver.yaml을 아래와 같이 수정한다.
+   ```bash
+   spec.containers.command:
+      - --audit-log-path=/var/log/kubernetes/apiserver/audit.log
+      - --audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml
+      - --audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config
+   spec.dnsPolicy: ClusterFirstWithHostNet
+   ```
+	
+## Step 7.  test-yaml 배포
+* 목적: `Webhook Server 동작 검증`
+* 실행: Annotation에 creator/updater/createdTime/updatedTime 필드가 생성 되었는지 확인한다.
+  ```bash
+  $ kubectl apply -f ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/test-yaml/namespaceclaim.yaml
+  $ kubectl describe namespaceclaim example-namespace-webhook
+  ```
+
+
+
