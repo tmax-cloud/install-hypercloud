@@ -20,8 +20,8 @@ HyperAuth
 
     * 작업 디렉토리 생성 및 환경 설정
     ```bash
-	$ mkdir -p ~/hypercloud-operator-install
-	$ export HPCD_HOME=~/hypercloud-operator-install
+	$ mkdir -p ~/hypercloud-install
+	$ export HPCD_HOME=~/hypercloud-install
 	$ export HPCD_VERSION=<tag1>
 	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ cd ${HPCD_HOME}
