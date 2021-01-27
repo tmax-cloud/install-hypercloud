@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hypercloud4-operator
+  namespace: hypercloud4-system
+  labels:
+    hypercloud4: operator
+    name: hypercloud4-operator
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      hypercloud4: operator
+  template:
+    metadata:
+      name: hypercloud4-operator
+      labels:
+        hypercloud4: operator
+    spec:
+      containers:
+      - name: hypercloud4-operator
+        image: tmaxcloudck/hypercloud-operator:{HPCD_VERSION}
+        imagePullPolicy: Always
+        env:
+        - name: BackIp
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: BackIp1
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: INSTANCEUUID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: ROOT_PASSWORD
+        - name: RETENTION_HOUR
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-initdb-config
+              key: retention.hour
+        - name: RETENTION_DAY
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-initdb-config
+              key: retention.day
+        - name: RETENTION_MONTH
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-initdb-config
+              key: retention.month
+        - name: CATALOG_NAMESPACE
+          value: default
+        - name: TZ
+          value: Asia/Seoul       
+        - name: HOSTCLUSTERNAME # host cluster name (when you types "kubectl config get-contexts")
+          value: "hostcluster"
+        - name: FED_NS # name of namespace which contains federation-system pods
+          value: "kube-federation-system"
+        - name: LOG_INFO_MAX_HISTORY_DAYS
+          value: "30"
+        - name: LOG_DEBUG_MAX_HISTORY_DAYS
+          value: "1"
+        ports:
+        - containerPort: 28677
+        resources:
+          limits:
+            cpu: "300m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+      serviceAccountName: hypercloud4-admin
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud4-operator-service
+  namespace: hypercloud4-system
+spec:
+  ports:
+  - name: "port1"
+    port: 28677
+    protocol: TCP
+    targetPort: 28677
+  selector:
+    hypercloud4: operator
+  type: LoadBalancer
