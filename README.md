@@ -20,8 +20,8 @@ HyperAuth
 
     * 작업 디렉토리 생성 및 환경 설정
     ```bash
-	$ mkdir -p ~/hypercloud-operator-install
-	$ export HPCD_HOME=~/hypercloud-operator-install
+	$ mkdir -p ~/hypercloud-install
+	$ export HPCD_HOME=~/hypercloud-install
 	$ export HPCD_VERSION=<tag1>
 	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ cd ${HPCD_HOME}
@@ -29,7 +29,7 @@ HyperAuth
 	* <tag1>에는 설치할 hypercloud-operator 버전 명시
 		예시: $ export HPCD_VERSION=4.1.4.7
 	* <tag2>에는 설치할 hypercloud-webhook 버전 명시
-		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.22		
+		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.29		
     ```
     * 외부 네트워크 통신이 가능한 환경에서 필요한 이미지를 다운받는다.
     ```bash
@@ -56,14 +56,14 @@ HyperAuth
     $ wget -O hypercloud-operator.tar.gz https://github.com/tmax-cloud/hypercloud-operator/archive/v${HPCD_VERSION}.tar.gz
     
     # hypercloud-webhook
-    $ git clone https://github.com/tmax-cloud/install-hypercloud.git
+    $ git clone https://github.com/tmax-cloud/install-hypercloud.git -b 4.1
     ```
   
-2. 위의 과정에서 생성한 tar 파일들을 `폐쇄망 환경으로 이동`시킨 뒤 사용하려는 registry에 이미지를 push한다.
+2. 위의 과정에서 생성한 tar 파일과 install-hypercloud/manifest 디렉토리를 폐쇄망 환경의 $HPCD_HOME으로 이동시킨 뒤 사용하려는 registry에 이미지를 push한다.
 	* 작업 디렉토리 생성 및 환경 설정
     ```bash
-	$ mkdir -p ~/hypercloud-operator-install
-	$ export HPCD_HOME=~/hypercloud-operator-install
+	$ mkdir -p ~/hypercloud-install
+	$ export HPCD_HOME=~/hypercloud-install
 	$ export HPCD_VERSION=<tag1>
 	$ export HPCD_WEBHOOK_VERSION=<tag2>
 	$ export REGISTRY=<REGISTRY_IP_PORT>
@@ -72,7 +72,7 @@ HyperAuth
 	* <tag1>에는 설치할 hypercloud-operator 버전 명시
 		예시: $ export HPCD_VERSION=4.1.4.7
 	* <tag2>에는 설치할 hypercloud-webhook 버전 명시
-		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.22
+		예시: $ export HPCD_WEBHOOK_VERSION=4.1.0.29
 	* <REGISTRY_IP_PORT>에는 폐쇄망 Docker Registry IP:PORT명시
 		예시: $ export REGISTRY=192.168.6.110:5000
 	```
@@ -222,6 +222,7 @@ HyperAuth
 * 목적: `Kube-apiserver와 Webhook 연동 설정 파일 생성 및 적용`
 * 실행: 
     ```bash
+    $ chmod +x ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/*.sh
     $ sh  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/02_gen-webhook-config.sh
     $ kubectl apply -f  ${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/03_webhook-configuration.yaml
     ```
