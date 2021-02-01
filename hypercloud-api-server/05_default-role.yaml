@@ -20,7 +20,7 @@ metadata:
     purpose: for-new-user
     madeby: tmax
 rules:
-  - apiGroups: ['tmax.io']
+  - apiGroups: ['claim.tmax.io']
     resources: ['namespaceclaims']
     verbs: ['create', 'get']
   - apiGroups: ['ui.tmax.io']
@@ -33,7 +33,7 @@ rules:
     resources: ["clusterclaims"]
     verbs: ["create"]
   - apiGroups: ["apiextensions.k8s.io"]
-    resources: ["*"]
+    resources: ["customresourcedefinitions"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apiregistration.k8s.io"]
     resources: ["*"]
