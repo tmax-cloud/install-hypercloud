@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud5-api-server-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - port: 443
+    targetPort: https
+  selector:
+    hypercloud5: api-server
+  type: NodePort
+  
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hypercloud5-api-server
+  namespace: hypercloud5-system
+  labels:
+    hypercloud5: api-server
+    name: hypercloud5-api-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hypercloud5: api-server
+  template:
+    metadata:
+      name: hypercloud5-api-server
+      namespace: hypercloud5-system
+      labels:
+        hypercloud5: api-server
+    spec:
+      serviceAccount: hypercloud5-admin
+      containers:
+        - name: hypercloud5-api-server
+          image: hypercloud-multi-api-server:5.0
+#          image: tmaxcloudck/hypercloud-api-server:b5.0.0.12
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "Asia/Seoul"
+            - name: HC_MODE
+              value: "multi"  # multi / single 
+            - name: GODEBUG
+              value: "x509ignoreCN=0"  
+            - name: SIDECAR_IMAGE
+              value: "fluent/fluent-bit:1.5-debug"
+          ports:
+          - containerPort: 443
+            name: https 
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1G"
+            requests:
+              cpu: "1"
+              memory: "100M"
+          volumeMounts:
+          - name: config-module
+            mountPath: /version 
+          # - name: kafka
+          #   mountPath: /go/src/etc/ssl
+#         - name: build
+#           mountPath: /go/src/build
+          - name: hypercloud5-api-server-certs
+            mountPath: /run/secrets/tls
+            readOnly: true
+      volumes:
+      - name : config-module
+        configMap:
+          name : hc-version
+      - name: hypercloud5-api-server-certs
+        secret:
+          secretName: hypercloud5-api-server-certs
+        name: hypercloud5-api-server-certs 
+      # - name: kafka
+      #   secret: 
+      #     secretName: hypercloud-kafka-secret2
+#      - name: build
+#        hostPath:
+#          path: /root/keycloak/hypercloud-api-server/build    
+          
+              

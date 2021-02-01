@@ -1,0 +1,36 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: hypercloud-mutator
+webhooks:
+  - name: hypercloud.mutating.metadata
+    clientConfig:
+      service:
+        name: hypercloud5-api-server-service
+        namespace: hypercloud5-system
+        path: "/metadata"
+        port: 443
+      caBundle: ${HYPERCLOUD5_CA_CERT}
+    rules:
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: ["claims.tmax.io"]
+        apiVersions: ["v1alpha1"]
+        resources: ["*"]
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: ["cluster.tmax.io"]
+        apiVersions: ["v1alpha1"]
+        resources: ["*"]
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: ["tmax.io"]
+        apiVersions: ["v1"]
+        resources: ["*"]
+    matchPolicy: Equivalent
+    sideEffects: None
+    admissionReviewVersions: ["v1beta1"]
+    timeoutSeconds: 10
+    namespaceSelector:
+      matchExpressions:
+      - key: webhook
+        operator: NotIn 
+        values: ["false"]
+    failurePolicy: Fail
