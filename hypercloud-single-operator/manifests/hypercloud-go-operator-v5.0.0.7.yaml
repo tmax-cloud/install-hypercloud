@@ -1,8 +1,15 @@
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  labels:
+#    control-plane: controller-manager
+#  name: hypercloud5-system
+---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud5-serving-cert
     controller-gen.kubebuilder.io/version: v0.3.0
   creationTimestamp: null
   name: namespaceclaims.claim.tmax.io
@@ -17,14 +24,6 @@ spec:
   - JSONPath: .status.reason
     name: Reason
     type: string
-  conversion:
-    strategy: Webhook
-    webhookClientConfig:
-      caBundle: Cg==
-      service:
-        name: webhook-service
-        namespace: system
-        path: /convert
   group: claim.tmax.io
   names:
     kind: NamespaceClaim
@@ -33,7 +32,6 @@ spec:
     shortNames:
     - nsc
     singular: namespaceclaim
-  preserveUnknownFields: false
   scope: Cluster
   subresources:
     status: {}
@@ -122,6 +120,9 @@ spec:
               type: string
             limitMemory:
               type: string
+          required:
+          - limitCpu
+          - limitMemory
           type: object
         status:
           description: NamespaceClaimStatus defines the observed state of NamespaceClaim
@@ -144,6 +145,7 @@ spec:
           type: object
       required:
       - resourceName
+      - specLimit
       type: object
   version: v1alpha1
   versions:
@@ -161,7 +163,7 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
+    cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud5-serving-cert
     controller-gen.kubebuilder.io/version: v0.3.0
   creationTimestamp: null
   name: resourcequotaclaims.claim.tmax.io
@@ -176,14 +178,6 @@ spec:
   - JSONPath: .status.reason
     name: Reason
     type: string
-  conversion:
-    strategy: Webhook
-    webhookClientConfig:
-      caBundle: Cg==
-      service:
-        name: webhook-service
-        namespace: system
-        path: /convert
   group: claim.tmax.io
   names:
     kind: ResourceQuotaClaim
@@ -192,7 +186,6 @@ spec:
     shortNames:
     - rqc
     singular: resourcequotaclaim
-  preserveUnknownFields: false
   scope: Namespaced
   subresources:
     status: {}
@@ -281,6 +274,9 @@ spec:
               type: string
             limitMemory:
               type: string
+          required:
+          - limitCpu
+          - limitMemory
           type: object
         status:
           description: ResourceQuotaClaimStatus defines the observed state of ResourceQuotaClaim
@@ -302,6 +298,7 @@ spec:
           type: object
       required:
       - resourceName
+      - specLimit
       type: object
   version: v1alpha1
   versions:
@@ -443,3 +440,289 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud5-serving-cert
+  creationTimestamp: null
+  name: hypercloud5-validating-webhook-configuration
+  namespace: hypercloud5-system
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: hypercloud5-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-namespaceclaim
+  failurePolicy: Fail
+  name: vnamespaceclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - namespaceclaims
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: hypercloud5-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-resourcequotaclaim
+  failurePolicy: Fail
+  name: vresourcequotaclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - resourcequotaclaims
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hypercloud5-leader-election-role
+  namespace: hypercloud5-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: hypercloud5-manager-role
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hypercloud5-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: hypercloud5-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hypercloud5-leader-election-rolebinding
+  namespace: hypercloud5-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hypercloud5-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: hypercloud5-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hypercloud5-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hypercloud5-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: hypercloud5-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hypercloud5-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hypercloud5-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: hypercloud5-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: hypercloud5-controller-manager-metrics-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud5-webhook-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - port: 443
+    targetPort: 9443
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: hypercloud5-controller-manager
+  namespace: hypercloud5-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+      - args:
+        - --metrics-addr=127.0.0.1:8080
+        - --enable-leader-election
+        command:
+        - /manager
+        image: tmaxcloudck/hypercloud-go-operator:b5.0.0.7
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+        - mountPath: /logs
+          name: operator-log-mnt
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/hostname: master-1
+      terminationGracePeriodSeconds: 10
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Equal
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: webhook-server-cert
+      - hostPath:
+          path: /root/woo/go-workspace/src/hypercloud-go-operator/logs
+        name: operator-log-mnt
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: hypercloud5-serving-cert
+  namespace: hypercloud5-system
+spec:
+  dnsNames:
+  - hypercloud5-webhook-service.hypercloud5-system.svc
+  - hypercloud5-webhook-service.hypercloud5-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: hypercloud5-selfsigned-issuer
+  secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: hypercloud5-selfsigned-issuer
+  namespace: hypercloud5-system
+spec:
+  selfSigned: {}
