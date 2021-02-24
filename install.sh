@@ -2,6 +2,7 @@
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
+HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 
@@ -56,6 +57,10 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  03_postgres-create.yaml
   kubectl apply -f  04_hypercloud-api-server.yaml
   kubectl apply -f  05_default-role-create.yaml
+popd
+
+pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
+  kubectl apply -f  hypercloud-single-operator.yaml
 popd
 
 #  step 2 - create and apply config
