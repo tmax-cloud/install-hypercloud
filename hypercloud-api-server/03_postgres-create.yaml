@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:13.1
+          image: tmaxcloudck/postgres-cron:{HPCD_POSTGRES_VERSION}
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
