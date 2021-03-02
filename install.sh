@@ -10,6 +10,17 @@ YQ_VERSION=${YQ_VERSION:-"v4.4.1"}
 
 set -xe
 
+
+# Check if certmanager exists
+if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
+  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+fi
+
+# Check if namespace exists
+if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
+   kubectl create ns hypercloud5-system
+fi
+
 # Install pkg or binary
 if ! command -v kustomize 2>/dev/null ; then
   curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
@@ -19,19 +30,14 @@ if ! command -v kustomize 2>/dev/null ; then
   rm "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
 fi
 
+# Install pkg or binary
+if ! command -v sshpass 2>/dev/null ; then
+  yum install sshpass
+fi
+
 if ! command -v yq 2>/dev/null ; then
   wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
-fi
-
-# Check if namespace exists
-if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
-   kubectl create ns hypercloud5-system
-fi
-
-# Check if certmanager exists
-if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
-  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
 fi
 
 # Install hypercloud-single-server
@@ -117,22 +123,24 @@ do
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config"'"'"' -i ./kube-apiserver.yaml'
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq e '"'"'.spec.dnsPolicy += "ClusterFirstWithHostNet"'"'"' -i ./kube-apiserver.yaml'
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
+done
 
 #  step 6 - check all master is ready
-IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.conditions[-1].type}')
+IFS=' ' read -r -a nodes <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.conditions[-1].type}')
 for (( i=0; i<8; i++ )); do
   j=0;
-  for master in "${masters[@]}"
+  for node in "${nodes[@]}"
   do
-    if [ $master != Ready ]; then
+    if [ $node != Ready ]; then
       sleep 10s
       continue
     else
       j=$((j+1));
     fi
 
-    if [ ${#masters[@]} == $j  ]; then
+    if [ ${#nodes[@]} == $j  ]; then
       break 2;
     fi
   done
 done
+

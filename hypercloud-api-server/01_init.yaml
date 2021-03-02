@@ -1,11 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: hypercloud5-system
-
----
-
-apiVersion: v1
 kind: ResourceQuota
 metadata:
   name: hypercloud5-system-quota
