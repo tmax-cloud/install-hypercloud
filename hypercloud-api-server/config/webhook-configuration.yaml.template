@@ -13,8 +13,12 @@ webhooks:
       caBundle: ${HYPERCLOUD5_CA_CERT}
     rules:
       - operations: ["CREATE","UPDATE"]
-        apiGroups: ["claims.tmax.io"]
+        apiGroups: ["claim.tmax.io"]
         apiVersions: ["v1alpha1"]
+        resources: ["*"]
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: ["claim.tmax.io"]
+        apiVersions: ["v1"]
         resources: ["*"]
       - operations: ["CREATE","UPDATE"]
         apiGroups: ["cluster.tmax.io"]

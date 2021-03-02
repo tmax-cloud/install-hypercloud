@@ -44,6 +44,8 @@ rules:
     - group: "storage.k8s.io"
     - group: "tekton.dev"
     - group: "tmax.io"
+    - group: "claim.tmax.io"
+    - group: "cluster.tmax.io"
     - group: "types.kubefed.io"
   
   # Don't log others.

@@ -36,8 +36,7 @@ spec:
       serviceAccount: hypercloud5-admin
       containers:
         - name: hypercloud5-api-server
-          image: hypercloud-multi-api-server:5.0
-#          image: tmaxcloudck/hypercloud-api-server:b5.0.0.12
+          image: tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
@@ -76,11 +75,26 @@ spec:
         secret:
           secretName: hypercloud5-api-server-certs
         name: hypercloud5-api-server-certs 
+      - name: smtp-secret
+        secret:
+          secretName: smtp-secret
+          items:
+          - key: SMTP_USERNAME
+            path: username
+          - key: SMTP_PASSWORD
+            path: password
       # - name: kafka
       #   secret: 
       #     secretName: hypercloud-kafka-secret2
 #      - name: build
 #        hostPath:
 #          path: /root/keycloak/hypercloud-api-server/build    
-          
-              
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smtp-secret
+type: Opaque
+data:
+  SMTP_USERNAME: bm8tcmVwbHktdGNAdG1heC5jby5rcg==
+  SMTP_PASSWORD: IUB0Y2Ruc2R1ZHhsYTEx

@@ -3,17 +3,24 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
+HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
+YQ_VERSION=${YQ_VERSION:-"v4.4.1"}
 
 set -xe
 # private 
-
 # Install hypercloud-single-server
+pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
+  kubectl apply -f  hypercloud-single-operator.yaml
+popd
+
 # Install hypercloud-multi-server
+pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
+  kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_VERSION}.yaml
+popd
+
 # Install hypercloud-api-server
-
-
 # Install pkg or binary
 if ! command -v kustomize 2>/dev/null ; then
   curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
@@ -57,10 +64,6 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  03_postgres-create.yaml
   kubectl apply -f  04_hypercloud-api-server.yaml
   kubectl apply -f  05_default-role-create.yaml
-popd
-
-pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
-  kubectl apply -f  hypercloud-single-operator.yaml
 popd
 
 #  step 2 - create and apply config
