@@ -7,7 +7,6 @@ HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.4.1"}
-
 set -xe
 
 
@@ -71,7 +70,9 @@ fi
 
 
 # step 0  - sed manifests
-sed -i 's/tmaxcloudck\/hypercloud-api-server/'${REGISTRY}'\/tmaxcloudck\/hypercloud-api-server/g' ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
+if [ $REGISTRY != "{REGISTRY}" ]; then
+  sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
+fi
 sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
 
 # step 1  - apply manifests
