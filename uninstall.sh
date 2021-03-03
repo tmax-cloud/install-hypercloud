@@ -46,23 +46,30 @@ popd
 
 pushd $HYPERCLOUD_API_SERVER_HOME/pki
   timeout 5m kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
+  suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete secret"
   fi
 popd
 
 pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
-  timeout 5m kubectl delete -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  timeout 5m kubectl delete -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-multi-operator"
   fi
 popd
 
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
-  timeout 5m kubectl delete -f  hypercloud-single-operator.yaml
+  timeout 5m kubectl delete -f hypercloud-single-operator.yaml
+  suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-single-operator"
   fi
 popd
 
 timeout 5m kubectl delete namespace hypercloud5-system
+suc=`echo $?`
+if [ $suc != 0 ]; then
+  echo "Failed to delete namespace hypercloud5-system"
+fi
