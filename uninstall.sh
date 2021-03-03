@@ -73,3 +73,5 @@ suc=`echo $?`
 if [ $suc != 0 ]; then
   echo "Failed to delete namespace hypercloud5-system"
 fi
+
+sudo yq e 'del(.spec.dnsPolicy)' -i /etc/kubernetes/manifests/kube-apiserver.yaml
