@@ -42,7 +42,7 @@ spec:
             - name: TZ
               value: "Asia/Seoul"
             - name: HC_MODE
-              value: "multi"  # multi / single 
+              value: {HPCD_MODE} # multi / single 
             - name: GODEBUG
               value: "x509ignoreCN=0"  
             - name: SIDECAR_IMAGE

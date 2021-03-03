@@ -41,7 +41,7 @@ fi
 
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
-  kubectl apply -f  hypercloud-single-operator.yaml
+  kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
 
 #Install hypercloud-multi-server
@@ -75,6 +75,7 @@ if [ $REGISTRY != "{REGISTRY}" ]; then
   sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/03_postgres-create.yaml
 fi
 sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
+sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
 sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_postgres-create.yaml
 
 # step 1  - apply manifests
