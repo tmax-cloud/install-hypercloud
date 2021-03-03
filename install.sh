@@ -13,6 +13,9 @@ set -xe
 # Check if certmanager exists
 if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+  timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager
+  timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-cainjector
+  timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
 fi
 
 # Check if namespace exists
