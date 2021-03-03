@@ -8,12 +8,12 @@ source $SCRIPTDIR/hypercloud.config
 set -x
 
 
-pushd $HYPERCLOUD_API_SERVER_HOME/config
-  rm /etc/kubernetes/pki/audit-policy.yaml
-  rm /etc/kubernetes/pki/audit-webhook-config
-
-  kubectl delete -f webhook-configuration.yaml
-popd
+#pushd $HYPERCLOUD_API_SERVER_HOME/config
+#  rm /etc/kubernetes/pki/audit-policy.yaml
+#  rm /etc/kubernetes/pki/audit-webhook-config
+#
+#  kubectl delete -f webhook-configuration.yaml
+#popd
 
 pushd $HYPERCLOUD_API_SERVER_HOME
   timeout 5m kubectl delete -f 05_default-role.yaml
@@ -78,4 +78,4 @@ if [ $suc != 0 ]; then
   echo "Failed to delete cert-manager"
 fi
 
-sudo yq e 'del(.spec.dnsPolicy)' -i /etc/kubernetes/manifests/kube-apiserver.yaml
+#sudo yq e 'del(.spec.dnsPolicy)' -i /etc/kubernetes/manifests/kube-apiserver.yaml
