@@ -3,18 +3,9 @@ HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
 source $SCRIPTDIR/hypercloud.config
-#KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
-#YQ_VERSION=${YQ_VERSION:-"v4.4.1"}
 set -x
 
-
-#pushd $HYPERCLOUD_API_SERVER_HOME/config
-#  rm /etc/kubernetes/pki/audit-policy.yaml
-#  rm /etc/kubernetes/pki/audit-webhook-config
-#
-#  kubectl delete -f webhook-configuration.yaml
-#popd
-
+# step 1 - delete hypercloud-api-server and involved secret
 pushd $HYPERCLOUD_API_SERVER_HOME
   timeout 5m kubectl delete -f 05_default-role.yaml
   suc=`echo $?`
@@ -41,9 +32,6 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   if [ $suc != 0 ]; then
     echo "Failed to delete 01_init.yaml"
   fi
-popd
-
-pushd $HYPERCLOUD_API_SERVER_HOME/pki
   timeout 5m kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
   suc=`echo $?`
   if [ $suc != 0 ]; then
@@ -51,6 +39,7 @@ pushd $HYPERCLOUD_API_SERVER_HOME/pki
   fi
 popd
 
+# step 2 - delete hypercloud-multi-operator
 pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   timeout 5m kubectl delete -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   suc=`echo $?`
@@ -59,6 +48,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   fi
 popd
 
+# step 3 - delete hypercloud-single-operator
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   timeout 5m kubectl delete -f hypercloud-single-operator.yaml
   suc=`echo $?`
@@ -67,15 +57,23 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   fi
 popd
 
+# step 4 - delete hypercloud5-system namespace
 timeout 5m kubectl delete namespace hypercloud5-system
 suc=`echo $?`
 if [ $suc != 0 ]; then
   echo "Failed to delete namespace hypercloud5-system"
 fi
 
-#timeout 5m kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
-#if [ $suc != 0 ]; then
-  #echo "Failed to delete cert-manager"
-#fi
+# step 5 - delete audit configuration
+cp /etc/kubernetes/manifests/kube-apiserver.yaml .
+yq eval 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
+yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )' -i kube-apiserver.yaml
+yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )' -i kube-apiserver.yaml
+yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )' -i kube-apiserver.yaml
+mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
-#sudo yq e 'del(.spec.dnsPolicy)' -i /etc/kubernetes/manifests/kube-apiserver.yaml
+pushd $HYPERCLOUD_API_SERVER_HOME/config
+  rm /etc/kubernetes/pki/audit-policy.yaml
+  rm /etc/kubernetes/pki/audit-webhook-config
+  kubectl delete -f webhook-configuration.yaml
+popd
