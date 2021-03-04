@@ -77,3 +77,22 @@ pushd $HYPERCLOUD_API_SERVER_HOME/config
   rm /etc/kubernetes/pki/audit-webhook-config
   kubectl delete -f webhook-configuration.yaml
 popd
+
+#  step 6 - delete audit configuration of all k8s-apiserver master nodes
+IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
+for master in "${masters[@]}"
+do
+  if [ $master == $MAIN_MASTER_IP ]; then
+    continue
+  fi
+
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq eval '"'"'del(.spec.dnsPolicy)'"'"' -i kube-apiserver.yaml'
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )'"'"' -i kube-apiserver.yaml'
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )'"'"' -i kube-apiserver.yaml'
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )'"'"' -i kube-apiserver.yaml'
+
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
+
+  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo rm /etc/kubernetes/pki/audit-policy.yaml /etc/kubernetes/pki/audit-webhook-config
+done
