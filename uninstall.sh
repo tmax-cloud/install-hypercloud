@@ -73,9 +73,9 @@ if [ $suc != 0 ]; then
   echo "Failed to delete namespace hypercloud5-system"
 fi
 
-timeout 5m kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
-if [ $suc != 0 ]; then
-  echo "Failed to delete cert-manager"
-fi
+#timeout 5m kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+#if [ $suc != 0 ]; then
+  #echo "Failed to delete cert-manager"
+#fi
 
 #sudo yq e 'del(.spec.dnsPolicy)' -i /etc/kubernetes/manifests/kube-apiserver.yaml
