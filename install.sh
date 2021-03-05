@@ -48,9 +48,11 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
 popd
 
 #Install hypercloud-multi-server
-pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
-  kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-popd
+if [ $HPCD_MODE == "multi" ]; then
+  pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
+    kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  popd
+fi
 
 # Install hypercloud-api-server
 # step 1  - create pki and secret
