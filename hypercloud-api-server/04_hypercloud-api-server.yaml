@@ -60,10 +60,8 @@ spec:
           volumeMounts:
           - name: config-module
             mountPath: /version 
-          # - name: kafka
-          #   mountPath: /go/src/etc/ssl
-#         - name: build
-#           mountPath: /go/src/build
+          - name: kafka
+            mountPath: /go/src/etc/ssl
           - name: hypercloud5-api-server-certs
             mountPath: /run/secrets/tls
             readOnly: true
@@ -83,12 +81,9 @@ spec:
             path: username
           - key: SMTP_PASSWORD
             path: password
-      # - name: kafka
-      #   secret: 
-      #     secretName: hypercloud-kafka-secret2
-#      - name: build
-#        hostPath:
-#          path: /root/keycloak/hypercloud-api-server/build    
+      - name: kafka
+        secret:
+          secretName: hypercloud-kafka-secret2
 ---
 apiVersion: v1
 kind: Secret
