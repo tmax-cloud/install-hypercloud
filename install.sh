@@ -34,7 +34,8 @@ fi
 
 # Install pkg or binary
 if ! command -v sshpass 2>/dev/null ; then
-  yum install sshpass
+  sudo yum install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/sshpass-1.06-9.el8.x86_64.rpm
+  # yum install sshpass
 fi
 
 if ! command -v yq 2>/dev/null ; then
