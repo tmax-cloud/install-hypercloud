@@ -65,6 +65,9 @@ spec:
           - name: hypercloud5-api-server-certs
             mountPath: /run/secrets/tls
             readOnly: true
+          - name: hypercloud5-api-server-certs
+            mountPath: /run/secrets/tls
+            readOnly: true
       volumes:
       - name : config-module
         configMap:
@@ -84,6 +87,12 @@ spec:
       - name: kafka
         secret:
           secretName: hypercloud-kafka-secret2
+      - name: kafka
+        secret:
+          secretName: token-secret
+          items:
+          - key: ACCESS_TOKEN
+            path: accessSecret
 ---
 apiVersion: v1
 kind: Secret
@@ -93,3 +102,12 @@ type: Opaque
 data:
   SMTP_USERNAME: bm8tcmVwbHktdGNAdG1heC5jby5rcg==
   SMTP_PASSWORD: IUB0Y2Ruc2R1ZHhsYTEx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: token-secret
+type: Opaque
+data:
+  ACCESS_TOKEN: dG1heEAxMw==
+
