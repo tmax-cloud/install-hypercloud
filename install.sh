@@ -77,20 +77,19 @@ fi
 
 # step 0  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
-  sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
-  sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/03_postgres-create.yaml
+  sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+  sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 fi
-sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
-sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/04_hypercloud-api-server.yaml
-sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_postgres-create.yaml
+sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 
 # step 1  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  01_init.yaml
-  kubectl apply -f  02_mysql-create.yaml
-  kubectl apply -f  03_postgres-create.yaml
-  kubectl apply -f  04_hypercloud-api-server.yaml
-  kubectl apply -f  05_default-role.yaml
+  kubectl apply -f  02_postgres-create.yaml
+  kubectl apply -f  03_hypercloud-api-server.yaml
+  kubectl apply -f  04_default-role.yaml
 popd
 
 #  step 2 - create and apply config

@@ -7,25 +7,20 @@ set -x
 
 # step 1 - delete hypercloud-api-server and involved secret
 pushd $HYPERCLOUD_API_SERVER_HOME
-  timeout 5m kubectl delete -f 05_default-role.yaml
+  timeout 5m kubectl delete -f 04_default-role.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
-    echo "Failed to delete 05_default-role.yaml"
+    echo "Failed to delete 04_default-role.yaml"
   fi
-  timeout 5m kubectl delete -f 04_hypercloud-api-server.yaml
+  timeout 5m kubectl delete -f 03_hypercloud-api-server.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
-    echo "Failed to delete 04_hypercloud-api-server.yaml"
+    echo "Failed to delete 03_hypercloud-api-server.yaml"
   fi
-  timeout 5m kubectl delete -f 03_postgres-create.yaml
+  timeout 5m kubectl delete -f 02_postgres-create.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
-    echo "Failed to delete 03_postgres-create.yaml"
-  fi
-  timeout 5m kubectl delete -f 02_mysql-create.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete 02_mysql-create.yaml"
+    echo "Failed to delete 02_postgres-create.yaml"
   fi
   timeout 5m kubectl delete -f 01_init.yaml
   suc=`echo $?`
