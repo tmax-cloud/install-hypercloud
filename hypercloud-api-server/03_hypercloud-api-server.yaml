@@ -87,7 +87,7 @@ spec:
       - name: kafka
         secret:
           secretName: hypercloud-kafka-secret2
-      - name: kafka
+      - name: token-secret
         secret:
           secretName: token-secret
           items:
