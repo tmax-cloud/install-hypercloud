@@ -65,8 +65,8 @@ spec:
           - name: hypercloud5-api-server-certs
             mountPath: /run/secrets/tls
             readOnly: true
-          - name: hypercloud5-api-server-certs
-            mountPath: /run/secrets/tls
+          - name: token-secret
+            mountPath: /run/secrets/token
             readOnly: true
       volumes:
       - name : config-module
