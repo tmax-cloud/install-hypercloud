@@ -2,15 +2,15 @@
 
 # hypercloud 설치 가이드
 
-## 구성 요소
+## 구성 요소 및 버전
 * hypercloud-api-server
-	* image: [https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	* image: [tmaxcloudck/hypercloud-api-server:b5.0.2.2](https://hub.docker.com/layers/tmaxcloudck/hypercloud-api-server/b5.0.2.2/images/sha256-34756bd55712b0d4edd04f5b3efaccb375be79118e346fc887789f27c0f93b3f?context=repo)
 	* git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 * hypercloud-single-operator
-	* image: [https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator)
+	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.2.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.2.0/images/sha256-b8f2362081bfdd2a65b55ec0fb97c035c88ffbff3c73456620fedeea69604aac?context=repo)
 	* git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 * hypercloud-multi-operator
-	* image: [https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.2.1](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
     
 

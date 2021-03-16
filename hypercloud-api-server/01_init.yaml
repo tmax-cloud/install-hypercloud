@@ -95,20 +95,32 @@ metadata:
 data:
   version.config: |
     modules:
-    - name: HyperCloud-Operator
-      namespace:
+    - name: HyperCloud-Multi-Operator
+      namespace: hypercloud5-system
       selector:
         matchLabels:
           statusLabel:
-          - hypercloud5=operator
+          - hypercloud=multi-operator
           versionLabel:
-          - hypercloud5=operator
+          - hypercloud=multi-operator
       readinessProbe:
 
-      versionProbe:
+      versionProbe: manager
+      
+    - name: HyperCloud-Single-Operator
+      namespace: hypercloud5-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - hypercloud=single-operator
+          versionLabel:
+          - hypercloud=single-operator
+      readinessProbe:
+
+      versionProbe: manager
 
     - name: HyperCloud-Console
-      namespace:
+      namespace: console-system
       selector:
         matchLabels:
           statusLabel:
@@ -119,14 +131,14 @@ data:
 
       versionProbe:
 
-    - name: HyperCloud-WebHook
-      namespace:
+    - name: HyperCloud-Api-Server
+      namespace: hypercloud5-system
       selector:
         matchLabels:
           statusLabel:
-          - hypercloud5=webhook
+          - hypercloud5=api-server
           versionLabel:
-          - hypercloud5=webhook
+          - hypercloud5=api-server
       readinessProbe:
 
       versionProbe:
