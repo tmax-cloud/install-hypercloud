@@ -90,10 +90,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: hc-version
+  name: version-config
   namespace: hypercloud5-system
 data:
-  module.config: |
+  version.config: |
     modules:
     - name: HyperCloud-Operator
       namespace:

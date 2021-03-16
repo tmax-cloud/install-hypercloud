@@ -58,8 +58,9 @@ spec:
               cpu: "1"
               memory: "100M"
           volumeMounts:
-          - name: config-module
-            mountPath: /version 
+          - name: version-config
+            mountPath: /go/src/version/version.config
+            subPath: version.config
           #- name: kafka
           #  mountPath: /go/src/etc/ssl
           - name: hypercloud5-api-server-certs
@@ -69,9 +70,9 @@ spec:
             mountPath: /run/secrets/token
             readOnly: true
       volumes:
-      - name : config-module
+      - name : version-config
         configMap:
-          name : hc-version
+          name : version-config
       - name: hypercloud5-api-server-certs
         secret:
           secretName: hypercloud5-api-server-certs
