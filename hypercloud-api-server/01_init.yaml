@@ -105,7 +105,8 @@ data:
           - hypercloud=multi-operator
       readinessProbe:
 
-      versionProbe: manager
+      versionProbe:
+        container: manager
       
     - name: HyperCloud-Single-Operator
       namespace: hypercloud5-system
@@ -117,7 +118,8 @@ data:
           - hypercloud=single-operator
       readinessProbe:
 
-      versionProbe: manager
+      versionProbe:
+        container: manager
 
     - name: HyperCloud-Console
       namespace: console-system
