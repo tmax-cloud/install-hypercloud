@@ -39,6 +39,9 @@ webhooks:
         values: ["false"]
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.pod
+    objectSelector:
+      matchLabels:
+        log-collector: enabled
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -57,6 +60,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.deployment
+    objectSelector:
+      matchLabels:
+        log-collector: enabled
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -75,6 +81,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.replicaset
+    objectSelector:
+      matchLabels:
+        log-collector: enabled  
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -93,6 +102,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.statefulset
+    objectSelector:
+      matchLabels:
+        log-collector: enabled  
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -111,6 +123,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.daemonset
+    objectSelector:
+      matchLabels:
+        log-collector: enabled  
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -129,6 +144,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.cronjob
+    objectSelector:
+      matchLabels:
+        log-collector: enabled  
     clientConfig:
       service:
         name: hypercloud5-api-server-service
@@ -147,6 +165,9 @@ webhooks:
     timeoutSeconds: 10
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.job
+    objectSelector:
+      matchLabels:
+        log-collector: enabled  
     clientConfig:
       service:
         name: hypercloud5-api-server-service
