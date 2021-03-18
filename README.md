@@ -58,7 +58,7 @@
 		* MASTER_NODE_ROOT_USER
 			* 마스터 노드의 루트 유저 이름
 			* ex) root
-		* INVITATION_TOKEN_EXPIRED_TIME
+		* INVITATION_TOKEN_EXPIRED_DATE
 			* 클러스터에 사용자 초대 시 초대 만료 시간
 			* ex) 7days, 1hours, 1minutes
 	
