@@ -58,6 +58,10 @@
 		* MASTER_NODE_ROOT_USER
 			* 마스터 노드의 루트 유저 이름
 			* ex) root
+		* INVITATION_TOKEN_EXPIRED_TIME
+			* 클러스터에 사용자 초대 시 초대 만료 시간
+			* ex) 7days, 1hours, 1minutes
+	
 
 ## Step 1. installer 실행
 * 목적 : `설치를 위한 shell script 실행`
