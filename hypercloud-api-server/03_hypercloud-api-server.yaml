@@ -43,6 +43,8 @@ spec:
               value: "Asia/Seoul"
             - name: HC_MODE
               value: {HPCD_MODE} # multi / single 
+            - name: INVITATION_TOKEN_EXPIRED_DATE
+              value: {INVITATION_TOKEN_EXPIRED_DATE} # multi / single 
             - name: GODEBUG
               value: "x509ignoreCN=0"  
             - name: SIDECAR_IMAGE
