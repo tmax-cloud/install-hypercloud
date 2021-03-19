@@ -10,7 +10,7 @@
 	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.2.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.2.0/images/sha256-b8f2362081bfdd2a65b55ec0fb97c035c88ffbff3c73456620fedeea69604aac?context=repo)
 	* git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 * hypercloud-multi-operator
-	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.2.1](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.0.2](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
     
 
