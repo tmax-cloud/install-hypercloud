@@ -691,7 +691,7 @@ spec:
       - name: cert
         secret:
           defaultMode: 420
-          secretName: webhook-server-cert
+          secretName: hypercloud-single-operator-webhook-server-cert
       - emptyDir: null
         name: operator-log-mnt
 ---
