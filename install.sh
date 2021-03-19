@@ -47,13 +47,13 @@ fi
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   chmod +x *.sh
   ./generateTls.sh -name=hypercloud-single-operator -dns=hypercloud-single-operator-webhook-service.hypercloud5-system.svc -dns=hypercloud-single-operator-webhook-service.hypercloud5-system.svc.cluster.local
-  if [ -z "$(kubectl get secret webhook-server-cert -n hypercloud5-system | awk '{print $1}')" ]; then
-    kubectl -n hypercloud5-system create secret generic webhook-server-cert \
+  if [ -z "$(kubectl get secret hypercloud-single-operator-webhook-server-cert -n hypercloud5-system | awk '{print $1}')" ]; then
+    kubectl -n hypercloud5-system create secret generic hypercloud-single-operator-webhook-server-cert \
     --from-file=$HYPERCLOUD_SINGLE_OPERATOR_HOME/pki/hypercloud-single-operator.crt \
     --from-file=$HYPERCLOUD_SINGLE_OPERATOR_HOME/pki/hypercloud-single-operator.key
   else
-    kubectl -n hypercloud5-system delete secret  webhook-server-cert
-    kubectl -n hypercloud5-system create secret generic webhook-server-cert \
+    kubectl -n hypercloud5-system delete secret  hypercloud-single-operator-webhook-server-cert
+    kubectl -n hypercloud5-system create secret generic hypercloud-single-operator-webhook-server-cert \
     --from-file=$HYPERCLOUD_SINGLE_OPERATOR_HOME/pki/hypercloud-single-operator.crt \
     --from-file=$HYPERCLOUD_SINGLE_OPERATOR_HOME/pki/hypercloud-single-operator.key
   fi
