@@ -18,6 +18,7 @@
 * 필수 모듈  
   * [RookCeph](https://github.com/tmax-cloud/install-rookceph)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
+  * CertManager
 
 * hypercloud-multi-operator 설치시 필요 모듈  
   * [TemplateServiceBroker](https://github.com/tmax-cloud/install-tsb/tree/tsb-5.0)  
