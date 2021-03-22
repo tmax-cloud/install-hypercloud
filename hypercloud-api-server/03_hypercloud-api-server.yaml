@@ -54,11 +54,11 @@ spec:
             name: https 
           resources:
             limits:
-              cpu: "0.5"
-              memory: "500m"
+              cpu: "500m"
+              memory: "500Mi"
             requests:
-              cpu: "0.3"
-              memory: "100M"
+              cpu: "300m"
+              memory: "100Mi"
           volumeMounts:
           - name: version-config
             mountPath: /go/src/version/version.config
