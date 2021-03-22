@@ -46,10 +46,10 @@ spec:
           resources:
             limits:
               cpu: "0.5"
-              memory: "300m"
+              memory: "500m"
             requests:
-              cpu: "0.1"
-              memory: "30m"
+              cpu: "0.3"
+              memory: "100m"
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: data
