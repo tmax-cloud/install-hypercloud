@@ -144,19 +144,7 @@ data:
       readinessProbe:
 
       versionProbe:
-
-    - name: HyperCloud-Watcher
-      namespace:
-      selector:
-        matchLabels:
-          statusLabel:
-          - hypercloud5=secret-watcher
-          versionLabel:
-          - hypercloud5=secret-watcher
-      readinessProbe:
-
-      versionProbe:
-
+      
     - name: Kubernetes
       namespace:
       selector:
