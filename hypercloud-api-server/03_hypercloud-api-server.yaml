@@ -87,7 +87,6 @@ spec:
       - name: hypercloud5-api-server-certs
         secret:
           secretName: hypercloud5-api-server-certs
-        name: hypercloud5-api-server-certs 
       - name: smtp-secret
         secret:
           secretName: smtp-secret
