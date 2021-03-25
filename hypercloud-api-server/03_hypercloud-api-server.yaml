@@ -71,7 +71,16 @@ spec:
           - name: token-secret
             mountPath: /run/secrets/token
             readOnly: true
+          - name: smtp-secret
+            mountPath: /run/secrets/smtp
+            readOnly: true
+          - name: html
+            mountPath: /run/configs/html
+            readOnly: true
       volumes:
+      - name : html
+        configMap:
+          name : html-config
       - name : version-config
         configMap:
           name : version-config

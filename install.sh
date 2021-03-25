@@ -74,6 +74,10 @@ pushd $HYPERCLOUD_API_SERVER_HOME/pki
 popd
 fi
 
+if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
+  kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/invite.html -n hypercloud5-system
+fi
+
 
 # step 0  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
