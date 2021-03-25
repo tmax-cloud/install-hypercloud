@@ -24,15 +24,6 @@ if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
 fi
 
 # Install pkg or binary
-if ! command -v kustomize 2>/dev/null ; then
-  curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
-  tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
-  chmod +x kustomize
-  sudo mv kustomize /usr/local/bin/.
-  rm "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
-fi
-
-# Install pkg or binary
 if ! command -v sshpass 2>/dev/null ; then
   sudo yum install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/sshpass-1.06-9.el8.x86_64.rpm
   # yum install sshpass
@@ -41,6 +32,15 @@ fi
 if ! command -v yq 2>/dev/null ; then
   wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
+fi
+
+# Install pkg or binary
+if ! command -v kustomize 2>/dev/null ; then
+  curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  chmod +x kustomize
+  sudo mv kustomize /usr/local/bin/.
+  rm "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
 fi
 
 # Install hypercloud-single-server
@@ -101,7 +101,7 @@ popd
 
 #  step 2 - create and apply config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
-chmod +x *.sh 
+  chmod +x *.sh 
   ./gen-audit-config.sh
   ./gen-webhook-config.sh
   cp audit-policy.yaml /etc/kubernetes/pki/

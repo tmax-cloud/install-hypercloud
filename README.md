@@ -4,13 +4,13 @@
 
 ## 구성 요소 및 버전
 * hypercloud-api-server
-	* image: [tmaxcloudck/hypercloud-api-server:b5.0.2.2](https://hub.docker.com/layers/tmaxcloudck/hypercloud-api-server/b5.0.2.2/images/sha256-34756bd55712b0d4edd04f5b3efaccb375be79118e346fc887789f27c0f93b3f?context=repo)
+	* image: [tmaxcloudck/hypercloud-api-server:b5.0.3.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-api-server/b5.0.3.0/images/sha256-f5d66bc5ad9f0d65288bd8f19ff5d4f154c50f8142fa8e792fdad8604bd4a5ca?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 * hypercloud-single-operator
-	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.2.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.2.0/images/sha256-b8f2362081bfdd2a65b55ec0fb97c035c88ffbff3c73456620fedeea69604aac?context=repo)
+	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.3.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.3.0/images/sha256-fa4082c4d887dca7c0ac5d28eed35a9731e4364ea022c992fec9e19986b2001d?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 * hypercloud-multi-operator
-	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.2.1](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.3.0](https://hub.docker.com/layers/141997981/tmaxcloudck/hypercloud-multi-operator/b5.0.3.0/images/sha256-72af8a7c3fe8dd1bd96c2d0235019528b4dad46b2187db80de5a06f35fcd4374?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
     
 
@@ -18,6 +18,7 @@
 * 필수 모듈  
   * [RookCeph](https://github.com/tmax-cloud/install-rookceph)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
+  * CertManager
 
 * hypercloud-multi-operator 설치시 필요 모듈  
   * [TemplateServiceBroker](https://github.com/tmax-cloud/install-tsb/tree/tsb-5.0)  

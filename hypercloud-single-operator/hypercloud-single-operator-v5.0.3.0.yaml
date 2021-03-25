@@ -662,7 +662,7 @@ spec:
         - --enable-leader-election
         command:
         - /manager
-        image: tmaxcloudck/hypercloud-single-operator:b5.0.2.0
+        image: tmaxcloudck/hypercloud-single-operator:b5.0.3.0
         name: manager
         ports:
         - containerPort: 9443

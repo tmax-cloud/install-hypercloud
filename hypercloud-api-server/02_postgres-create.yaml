@@ -45,11 +45,11 @@ spec:
                 key: POSTGRES_PASSWORD
           resources:
             limits:
-              cpu: "1"
-              memory: "3Gi"
+              cpu: "500m"
+              memory: "500Mi"
             requests:
-              cpu: "1"
-              memory: "300m"
+              cpu: "300m"
+              memory: "100Mi"
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: data
