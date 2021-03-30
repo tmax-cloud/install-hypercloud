@@ -79,10 +79,10 @@ if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print
 fi
 
 
-# step 0  - sed manifests
+# step 2  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
-  sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
+  sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+  sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 fi
 sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
@@ -91,7 +91,7 @@ sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g' 
 sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 
 
-# step 1  - apply manifests
+# step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  01_init.yaml
   kubectl apply -f  02_postgres-create.yaml
@@ -99,7 +99,7 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  04_default-role.yaml
 popd
 
-#  step 2 - create and apply config
+#  step 4 - create and apply config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   chmod +x *.sh 
   ./gen-audit-config.sh
@@ -109,7 +109,7 @@ pushd $HYPERCLOUD_API_SERVER_HOME/config
 
   kubectl apply -f webhook-configuration.yaml
 popd
-#  step 4 - modify kubernetes api-server manifest
+#  step 5 - modify kubernetes api-server manifest
 cp /etc/kubernetes/manifests/kube-apiserver.yaml .
 yq e '.spec.containers[0].command += "--audit-webhook-mode=batch"' -i ./kube-apiserver.yaml
 yq e '.spec.containers[0].command += "--audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml"' -i ./kube-apiserver.yaml
@@ -119,7 +119,7 @@ yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
 mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
 
-#  step 5 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
+#  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
 IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
 for master in "${masters[@]}"
 do
@@ -141,7 +141,7 @@ do
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 done
 
-#  step 6 - check all master is ready
+#  step 7 - check all master is ready
 IFS=' ' read -r -a nodes <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.conditions[-1].type}')
 for (( i=0; i<8; i++ )); do
   j=0;
