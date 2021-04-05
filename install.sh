@@ -60,7 +60,7 @@ fi
 if [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt" ] || [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key" ]; then
 pushd $HYPERCLOUD_API_SERVER_HOME/pki
   chmod +x *.sh
-  ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local 
+  sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
   if [ -z "$(kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
     kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
@@ -102,15 +102,15 @@ popd
 #  step 4 - create and apply config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   chmod +x *.sh 
-  ./gen-audit-config.sh
-  ./gen-webhook-config.sh
-  cp audit-policy.yaml /etc/kubernetes/pki/
-  cp audit-webhook-config /etc/kubernetes/pki/
+  sudo ./gen-audit-config.sh
+  sudo ./gen-webhook-config.sh
+  sudo cp audit-policy.yaml /etc/kubernetes/pki/
+  sudo cp audit-webhook-config /etc/kubernetes/pki/
 
   kubectl apply -f webhook-configuration.yaml
 popd
 #  step 5 - modify kubernetes api-server manifest
-cp /etc/kubernetes/manifests/kube-apiserver.yaml .
+sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
 yq e '.spec.containers[0].command += "--audit-webhook-mode=batch"' -i ./kube-apiserver.yaml
 yq e '.spec.containers[0].command += "--audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml"' -i ./kube-apiserver.yaml
 yq e '.spec.containers[0].command += "--audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config"' -i ./kube-apiserver.yaml
@@ -130,8 +130,8 @@ do
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master"  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master"  sudo chmod +x /usr/bin/yq
 
-  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" scp /etc/kubernetes/pki/audit-policy.yaml ${MASTER_NODE_ROOT_USER}@"$master":/etc/kubernetes/pki/audit-policy.yaml
-  sshpass -p "$MASTER_NODE_ROOT_PASSWORD" scp /etc/kubernetes/pki/audit-webhook-config ${MASTER_NODE_ROOT_USER}@"$master":/etc/kubernetes/pki/audit-webhook-config
+  sudo sshpass -p "$MASTER_NODE_ROOT_PASSWORD" scp /etc/kubernetes/pki/audit-policy.yaml ${MASTER_NODE_ROOT_USER}@"$master":/etc/kubernetes/pki/audit-policy.yaml
+  sudo sshpass -p "$MASTER_NODE_ROOT_PASSWORD" scp /etc/kubernetes/pki/audit-webhook-config ${MASTER_NODE_ROOT_USER}@"$master":/etc/kubernetes/pki/audit-webhook-config
 
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-webhook-mode=batch"'"'"' -i ./kube-apiserver.yaml'
