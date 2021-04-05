@@ -4,13 +4,13 @@
 
 ## 구성 요소 및 버전
 * hypercloud-api-server
-	* image: [tmaxcloudck/hypercloud-api-server:b5.0.3.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-api-server/b5.0.3.0/images/sha256-f5d66bc5ad9f0d65288bd8f19ff5d4f154c50f8142fa8e792fdad8604bd4a5ca?context=explore)
+	* image: [tmaxcloudck/hypercloud-api-server:b5.0.5.1](https://hub.docker.com/layers/tmaxcloudck/hypercloud-api-server/b5.0.5.1/images/sha256-f5d66bc5ad9f0d65288bd8f19ff5d4f154c50f8142fa8e792fdad8604bd4a5ca?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 * hypercloud-single-operator
-	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.3.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.3.0/images/sha256-fa4082c4d887dca7c0ac5d28eed35a9731e4364ea022c992fec9e19986b2001d?context=explore)
+	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.5.0](https://hub.docker.com/layers/tmaxcloudck/hypercloud-single-operator/b5.0.5.0/images/sha256-fa4082c4d887dca7c0ac5d28eed35a9731e4364ea022c992fec9e19986b2001d?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 * hypercloud-multi-operator
-	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.3.0](https://hub.docker.com/layers/141997981/tmaxcloudck/hypercloud-multi-operator/b5.0.3.0/images/sha256-72af8a7c3fe8dd1bd96c2d0235019528b4dad46b2187db80de5a06f35fcd4374?context=explore)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.5.0](https://hub.docker.com/layers/141997981/tmaxcloudck/hypercloud-multi-operator/b5.0.5.0/images/sha256-72af8a7c3fe8dd1bd96c2d0235019528b4dad46b2187db80de5a06f35fcd4374?context=explore)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
     
 

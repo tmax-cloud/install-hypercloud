@@ -1,3 +1,5 @@
+#!/bin/bash
+
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
