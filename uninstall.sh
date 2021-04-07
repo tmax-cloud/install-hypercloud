@@ -75,6 +75,8 @@ pushd $HYPERCLOUD_API_SERVER_HOME/config
   kubectl delete -f webhook-configuration.yaml
 popd
 
+sleep 30s
+
 #  step 6 - delete audit configuration of all k8s-apiserver master nodes
 IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
 for master in "${masters[@]}"
@@ -93,3 +95,4 @@ do
 
   sshpass -p "$MASTER_NODE_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER}@"$master" sudo rm /etc/kubernetes/pki/audit-policy.yaml /etc/kubernetes/pki/audit-webhook-config
 done
+sleep 30s
