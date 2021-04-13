@@ -6,7 +6,7 @@ HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
-YQ_VERSION=${YQ_VERSION:-"v4.4.1"}
+YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
 set -xe
 
 
