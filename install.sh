@@ -60,6 +60,7 @@ fi
 if [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt" ] || [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key" ]; then
 pushd $HYPERCLOUD_API_SERVER_HOME/pki
   sudo chmod +x *.sh
+  sudo touch ~/.rnd
   sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
   if [ -z "$(sudo kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
     sudo kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
