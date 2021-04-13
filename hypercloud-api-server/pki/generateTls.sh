@@ -61,11 +61,11 @@ done
 
 
 ###
-openssl genrsa -out "${NEW_CRT_NAME}.key" 4096
-openssl req -new -key "${NEW_CRT_NAME}.key" -out "${NEW_CRT_NAME}.csr" -sha256 \
+sudo openssl genrsa -out "${NEW_CRT_NAME}.key" 4096
+sudo openssl req -new -key "${NEW_CRT_NAME}.key" -out "${NEW_CRT_NAME}.csr" -sha256 \
         -subj "/C=KR/ST=CA/L=San Francisco/O=Tmax/CN=${NEW_CRT_NAME}"
 
-cat > "${NEW_CRT_NAME}.cnf" <<EOL
+sudo cat > "${NEW_CRT_NAME}.cnf" <<EOL
 [${NEW_CRT_NAME}]
 authorityKeyIdentifier=keyid,issuer
 basicConstraints = critical,CA:FALSE
@@ -75,11 +75,11 @@ ${subjectAltName}
 subjectKeyIdentifier=hash
 EOL
 
-openssl x509 -req -days 750 -in "${NEW_CRT_NAME}.csr" -sha256 \
+sudo openssl x509 -req -days 750 -in "${NEW_CRT_NAME}.csr" -sha256 \
         -CA "/etc/kubernetes/pki/hypercloud-root-ca.crt" -CAkey "/etc/kubernetes/pki/hypercloud-root-ca.key"  -CAcreateserial \
         -out "${NEW_CRT_NAME}.crt" -extfile "${NEW_CRT_NAME}.cnf" -extensions ${NEW_CRT_NAME}
 # append the intermediate cert to this one to make it a proper bundle
 
-rm "${NEW_CRT_NAME}.cnf" "${NEW_CRT_NAME}.csr"
+sudo rm "${NEW_CRT_NAME}.cnf" "${NEW_CRT_NAME}.csr"
 
 
