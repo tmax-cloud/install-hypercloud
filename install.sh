@@ -11,16 +11,16 @@ set -xe
 
 
 # Check if certmanager exists
-if [ -z "$(sudo kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
-  sudo kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
+  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
   sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager
   sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-cainjector
   sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
 fi
 
 # Check if namespace exists
-if [ -z "$(sudo kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
-   sudo kubectl create ns hypercloud5-system
+if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
+   kubectl create ns hypercloud5-system
 fi
 
 # Install pkg or binary
@@ -45,13 +45,13 @@ fi
 
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
-  sudo kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+  kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
 
 #Install hypercloud-multi-server
 if [ $HPCD_MODE == "multi" ]; then
   pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
-    sudo kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+    kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   popd
 fi
 
@@ -62,21 +62,21 @@ pushd $HYPERCLOUD_API_SERVER_HOME/pki
   sudo chmod +x *.sh
   sudo touch ~/.rnd
   sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
-  if [ -z "$(sudo kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
-    sudo kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
+  if [ -z "$(kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
+    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
   else
-    sudo kubectl -n hypercloud5-system delete secret  hypercloud5-api-server-certs
-    sudo kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
+    kubectl -n hypercloud5-system delete secret  hypercloud5-api-server-certs
+    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
   fi
 popd
 fi
 
-if [ -z "$(sudo kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
-  sudo kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/invite.html -n hypercloud5-system
+if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
+  kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/invite.html -n hypercloud5-system
 fi
 
 
@@ -94,10 +94,10 @@ sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
-  sudo kubectl apply -f  01_init.yaml
-  sudo kubectl apply -f  02_postgres-create.yaml
-  sudo kubectl apply -f  03_hypercloud-api-server.yaml
-  sudo kubectl apply -f  04_default-role.yaml
+  kubectl apply -f  01_init.yaml
+  kubectl apply -f  02_postgres-create.yaml
+  kubectl apply -f  03_hypercloud-api-server.yaml
+  kubectl apply -f  04_default-role.yaml
 popd
 
 #  step 4 - create and apply config
@@ -108,7 +108,7 @@ pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo cp audit-policy.yaml /etc/kubernetes/pki/
   sudo cp audit-webhook-config /etc/kubernetes/pki/
 
-  sudo kubectl apply -f webhook-configuration.yaml
+  kubectl apply -f webhook-configuration.yaml
 popd
 #  step 5 - modify kubernetes api-server manifest
 sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
@@ -121,7 +121,7 @@ sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
 
 #  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
-IFS=' ' read -r -a masters <<< $(sudo kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
+IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
 for master in "${masters[@]}"
 do
   if [ $master == $MAIN_MASTER_IP ]; then
@@ -144,7 +144,7 @@ done
 
 sleep 30s
 #  step 7 - check all master is ready
-IFS=' ' read -r -a nodes <<< $(sudo kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.conditions[-1].type}')
+IFS=' ' read -r -a nodes <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.conditions[-1].type}')
 for (( i=0; i<8; i++ )); do
   j=0;
   for node in "${nodes[@]}"
