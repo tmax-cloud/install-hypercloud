@@ -95,6 +95,18 @@ metadata:
 data:
   version.config: |
     modules:
+    - name: Kubernetes
+      namespace:
+      selector:
+        matchLabels:
+          statusLabel:
+          - component=kube-apiserver
+          versionLabel:
+          - component=kube-apiserver
+      readinessProbe:
+
+      versionProbe:
+      
     - name: HyperCloud-Multi-Operator
       namespace: hypercloud5-system
       selector:
@@ -145,18 +157,6 @@ data:
 
       versionProbe:
       
-    - name: Kubernetes
-      namespace:
-      selector:
-        matchLabels:
-          statusLabel:
-          - component=kube-apiserver
-          versionLabel:
-          - component=kube-apiserver
-      readinessProbe:
-
-      versionProbe:
-
     - name: Calico
       namespace: kube-system
       selector:
@@ -165,18 +165,6 @@ data:
           - k8s-app=calico-node
           versionLabel:
           - k8s-app=calico-node
-      readinessProbe:
-
-      versionProbe:
-
-    - name: Rook-Ceph
-      namespace: rook-ceph
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=rook-ceph-operator
-          versionLabel:
-          - app=rook-ceph-tools
       readinessProbe:
 
       versionProbe:
@@ -196,7 +184,6 @@ data:
           scheme: HTTP
       versionProbe:
         container: prometheus
-
 
     - name: Grafana
       namespace: monitoring
@@ -224,18 +211,6 @@ data:
 
       versionProbe:
 
-    - name: Tekton-Trigger
-      namespace: tekton-pipelines
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=tekton-triggers-controller
-          versionLabel:
-          - app=tekton-triggers-controller
-      readinessProbe:
-
-      versionProbe:
-
     - name: Catalog-Controller
       namespace: catalog
       selector:
@@ -256,9 +231,9 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - hypercloud5=template-service-broker
+          - app=template-service-broker
           versionLabel:
-          - hypercloud5=template-service-broker
+          - app=template-service-broker
       readinessProbe:
 
       versionProbe:
