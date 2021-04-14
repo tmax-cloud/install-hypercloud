@@ -227,7 +227,7 @@ data:
       versionProbe:
 
     - name: ClusterTemplateServiceBroker
-      namespace:
+      namespace: cluster-tsb-ns
       selector:
         matchLabels:
           statusLabel:
@@ -239,7 +239,7 @@ data:
       versionProbe:
 
     - name: TemplateServiceBroker
-      namespace:
+      namespace: tsb-ns
       selector:
         matchLabels:
           statusLabel:
