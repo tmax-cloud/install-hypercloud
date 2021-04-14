@@ -106,7 +106,7 @@ data:
       readinessProbe:
 
       versionProbe:
-      
+
     - name: HyperCloud-Multi-Operator
       namespace: hypercloud5-system
       selector:
@@ -224,6 +224,18 @@ data:
           path: /healthz/ready
           port: 8444
           scheme: HTTPS
+      versionProbe:
+
+    - name: ClusterTemplateServiceBroker
+      namespace:
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=cluster-template-service-broker
+          versionLabel:
+          - app=cluster-template-service-broker
+      readinessProbe:
+
       versionProbe:
 
     - name: TemplateServiceBroker
