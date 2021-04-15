@@ -26,6 +26,9 @@
   * [CAPI](https://github.com/tmax-cloud/install-CAPI/tree/5.0)
   * Federation
 
+* hyperauth 사전 작업 (Hypercloud 사용자에 default 그룹 추가)
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG){: width="100" height="100"}
+
 ## 폐쇄망 구축 가이드
 * Dockerhub의 이미지를 사용할 수 없는 경우, 아래의 과정을 통해 이미지를 준비합니다.
 * 그 후, hypercloud.config의 REGISTRY의 변수에 이미지 저장소를 넣고 install.sh을 실행하면 됩니다.  
