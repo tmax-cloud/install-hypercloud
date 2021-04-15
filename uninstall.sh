@@ -9,27 +9,27 @@ set -x
 
 # step 1 - delete hypercloud-api-server and involved secret
 pushd $HYPERCLOUD_API_SERVER_HOME
-  sudo timeout 5m kubectl delete -f 04_default-role.yaml
+  timeout 5m kubectl delete -f 04_default-role.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete 04_default-role.yaml"
   fi
-  sudo timeout 5m kubectl delete -f 03_hypercloud-api-server.yaml
+  timeout 5m kubectl delete -f 03_hypercloud-api-server.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete 03_hypercloud-api-server.yaml"
   fi
-  sudo timeout 5m kubectl delete -f 02_postgres-create.yaml
+  timeout 5m kubectl delete -f 02_postgres-create.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete 02_postgres-create.yaml"
   fi
-  sudo timeout 5m kubectl delete -f 01_init.yaml
+  timeout 5m kubectl delete -f 01_init.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete 01_init.yaml"
   fi
-  sudo timeout 5m kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
+  timeout 5m kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete secret"
@@ -38,7 +38,7 @@ popd
 
 # step 2 - delete hypercloud-multi-operator
 pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
-  sudo timeout 5m kubectl delete -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  timeout 5m kubectl delete -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-multi-operator"
@@ -47,7 +47,7 @@ popd
 
 # step 3 - delete hypercloud-single-operator
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
-  sudo timeout 5m kubectl delete -f hypercloud-single-operator.yaml
+  timeout 5m kubectl delete -f hypercloud-single-operator.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-single-operator"
@@ -55,7 +55,7 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
 popd
 
 # step 4 - delete hypercloud5-system namespace
-sudo timeout 5m kubectl delete namespace hypercloud5-system
+timeout 5m kubectl delete namespace hypercloud5-system
 suc=`echo $?`
 if [ $suc != 0 ]; then
   echo "Failed to delete namespace hypercloud5-system"
@@ -72,13 +72,13 @@ sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo rm /etc/kubernetes/pki/audit-policy.yaml
   sudo rm /etc/kubernetes/pki/audit-webhook-config
-  sudo kubectl delete -f webhook-configuration.yaml
+  kubectl delete -f webhook-configuration.yaml
 popd
 
 sleep 30s
 
 #  step 6 - delete audit configuration of all k8s-apiserver master nodes
-IFS=' ' read -r -a masters <<< $(sudo kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
+IFS=' ' read -r -a masters <<< $(kubectl get nodes --selector=node-role.kubernetes.io/master -o jsonpath='{$.items[*].status.addresses[?(@.type=="InternalIP")].address}')
 for master in "${masters[@]}"
 do
   if [ $master == $MAIN_MASTER_IP ]; then
