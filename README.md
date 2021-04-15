@@ -26,6 +26,54 @@
   * [CAPI](https://github.com/tmax-cloud/install-CAPI/tree/5.0)
   * Federation
 
+## 폐쇄망 구축 가이드
+* Dockerhub의 이미지를 사용할 수 없는 경우, 아래의 과정을 통해 이미지를 준비합니다.
+* 그 후, hypercloud.config의 REGISTRY의 변수에 이미지 저장소를 넣고 install.sh을 실행하면 됩니다.  
+  * 작업 디렉토리 생성 및 환경 설정
+    ``` bash
+	$ mkdir -p ~/hypercloud-install
+	$ export HYPERCLOUD_HOME=~/hypercloud-install
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.5.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.5.0
+	$ export HPCD_API_SERVER_VERSION=5.0.5.1
+	$ export HPCD_POSTGRES_VERSION=5.0.0.1
+	$ cd $HYPERCLOUD_HOME
+	```
+  * 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
+    ``` bash
+	$ sudo docker pull tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION} > api-server_b{HPCD_API_SERVER_VERSION}.tar
+
+	$ sudo docker pull tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION} > single-operator_b{HPCD_SINGLE_OPERATOR_VERSION}.tar
+
+	$ sudo docker pull tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION} > multi-operator_b{HPCD_MULTI_OPERATOR_VERSION}.tar
+
+	$ sudo docker pull tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
+	$ sudo docker save tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION} > postgres-cron_b{HPCD_POSTGRES_VERSION}.tar
+	```
+  * tar 파일을 폐쇄망 환경으로 이동시킨 후, registry에 이미지 push
+    ``` bash
+	# 이미지 레지스트리 주소
+	$ REGISTRY={IP:PORT}
+	
+	$ sudo docker load < api-server_b{HPCD_API_SERVER_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
+
+	$ sudo docker load < single-operator_b{HPCD_SINGLE_OPERATOR_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
+
+	$ sudo docker load < multi-operator_b{HPCD_MULTI_OPERATOR_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
+
+	$ sudo docker load < postgres-cron_b{HPCD_POSTGRES_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION} ${REGISTRY}/tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
+	```
 
 ## Step 0. hypercloud.config 설정
 * 목적 : `hypercloud.config 파일에 설치를 위한 정보 기입`
@@ -74,16 +122,16 @@
 * 목적 : `설치를 위한 shell script 실행`
 * 순서: 
 	* 권한 부여 및 실행
-	``` bash
-	$ sudo chmod +x install.sh
-	$ ./install.sh
-	```
+	  ``` bash
+	  $ sudo chmod +x install.sh
+	  $ ./install.sh
+	  ```
 
 ## 삭제 가이드
 * 목적 : `삭제를 위한 shell script 실행`
 * 순서: 
 	* 권한 부여 및 실행
-	``` bash
-	$ sudo chmod +x uninstall.sh
-	$ ./uninstall.sh
-	```
+	  ``` bash
+	  $ sudo chmod +x uninstall.sh
+	  $ ./uninstall.sh
+	  ```

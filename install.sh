@@ -45,12 +45,18 @@ fi
 
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
+  if [ $REGISTRY != "{REGISTRY}" ]; then
+    sudo sed -i 's#tmaxcloudck/hypercloud-single-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-single-operator#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+  fi
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
 
 #Install hypercloud-multi-server
 if [ $HPCD_MODE == "multi" ]; then
   pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
+  if [ $REGISTRY != "{REGISTRY}" ]; then
+    sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  fi
     kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   popd
 fi
@@ -82,8 +88,8 @@ fi
 
 # step 2  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
-  sudo sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
+  sudo sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+  sudo sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 fi
 sudo sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
