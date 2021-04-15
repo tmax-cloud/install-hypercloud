@@ -27,7 +27,7 @@
   * Federation
 
 * hyperauth 사전 작업 (Hypercloud 사용자에 default 그룹 추가)
-  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG)
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG =250x250)
 
 ## 폐쇄망 구축 가이드
 * Dockerhub의 이미지를 사용할 수 없는 경우, 아래의 과정을 통해 이미지를 준비합니다.
