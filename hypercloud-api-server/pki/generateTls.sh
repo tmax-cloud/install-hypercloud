@@ -75,11 +75,15 @@ ${subjectAltName}
 subjectKeyIdentifier=hash
 EOL
 
+sudo cp /etc/kubernetes/pki/hypercloud-root-ca.crt .
+sudo cp /etc/kubernetes/pki/hypercloud-root-ca.key .
+
 sudo openssl x509 -req -days 750 -in "${NEW_CRT_NAME}.csr" -sha256 \
-        -CA "/etc/kubernetes/pki/hypercloud-root-ca.crt" -CAkey "/etc/kubernetes/pki/hypercloud-root-ca.key"  -CAcreateserial \
+        -CA "hypercloud-root-ca.crt" -CAkey "hypercloud-root-ca.key"  -CAcreateserial \
         -out "${NEW_CRT_NAME}.crt" -extfile "${NEW_CRT_NAME}.cnf" -extensions ${NEW_CRT_NAME}
 # append the intermediate cert to this one to make it a proper bundle
 
-sudo rm "${NEW_CRT_NAME}.cnf" "${NEW_CRT_NAME}.csr"
+rm "${NEW_CRT_NAME}.cnf" "${NEW_CRT_NAME}.csr"
+rm hypercloud-root-ca.crt hypercloud-root-ca.key
 
 
