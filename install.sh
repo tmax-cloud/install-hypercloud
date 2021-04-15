@@ -126,6 +126,9 @@ sudo cp /etc/kubernetes/pki/audit-policy.yaml .
 sudo cp /etc/kubernetes/pki/audit-webhook-config .
 for master in "${SUB_MASTER_IP[@]}"
 do
+  if [ $master == "{SUB_MASTER_IP}" ]; then
+    continue
+  fi
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo chmod +x /usr/bin/yq
 
