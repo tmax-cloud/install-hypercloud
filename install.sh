@@ -40,7 +40,7 @@ if ! command -v kustomize 2>/dev/null ; then
   sudo tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
   sudo chmod +x kustomize
   sudo mv kustomize /usr/local/bin/.
-  sudo rm "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  sudo rm -f "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
 fi
 
 # Install hypercloud-single-server
@@ -144,7 +144,7 @@ do
 
   i=$((i+1))
 done
-rm audit-policy.yaml audit-webhook-config
+rm -f audit-policy.yaml audit-webhook-config
 
 sleep 30s
 #  step 7 - check all master is ready
