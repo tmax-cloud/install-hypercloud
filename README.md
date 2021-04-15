@@ -27,7 +27,18 @@
   * Federation
 
 * hyperauth 사전 작업 (Hypercloud 사용자에 default 그룹 추가)
-  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG){: width="100" height="100"}
+  * Hypercloud를 서비스할 realm 선택
+  * hypercloud5 그룹 생성 (hypercloud5 동일하게 그룹을 생성해야 함)
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/create-hypercloud5-group.png)
+  
+  * hypercloud5 그룹을 default로 설정                             
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/set-hypercloud5-as-default.png)
+  
+  * client-scope에서 group에 대한 client-scope 생성
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/create-client-scope.PNG)
+  
+  * 위에서 만든 client-scope을 client에 추가
+  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG)
 
 ## 폐쇄망 구축 가이드
 * Dockerhub의 이미지를 사용할 수 없는 경우, 아래의 과정을 통해 이미지를 준비합니다.
