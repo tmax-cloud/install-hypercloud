@@ -16,7 +16,7 @@
 
 ## Prerequisite
 * 필수 모듈  
-  * [RookCeph](https://github.com/tmax-cloud/install-rookceph)
+  * [RookCeph](https://github.com/tmax-cloud/hypersds-wiki/)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
   * CertManager
 
@@ -52,13 +52,19 @@
 			* ex) 192.168.171:5000
 		* MAIN_MASTER_IP
 			* 메인 마스터 노드의 IP
-			* ex) 192.168.6.171
-		* MASTER_NODE_ROOT_PASSWORD
-			* 마스터 노드의 패스워드
-			* 다중화 마스터의 경우 모두 비밀번호가 동일하다고 가정
+			* ex) 192.168.6.171  
+
+		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
+		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
+		* SUB_MASTER_IP
+			* 메인 마스터 노드를 제외한 마스터 노드들의 IP 배열
+			* ex) ("192.168.6.172" "192.168.6.173")
 		* MASTER_NODE_ROOT_USER
-			* 마스터 노드의 루트 유저 이름
-			* ex) root
+			* 메인 마스터 노드를 제외한 마스터 노드의 루트 유저 이름 배열
+			* ex) ("root1" "root2")
+		* MASTER_NODE_ROOT_PASSWORD
+			* 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
+			* ex ) ("passwd111" "passwd222")
 		* INVITATION_TOKEN_EXPIRED_DATE
 			* 클러스터에 사용자 초대 시 초대 만료 시간
 			* ex) 7days, 1hours, 1minutes
