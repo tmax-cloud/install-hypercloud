@@ -109,7 +109,7 @@ rules:
   resources: ['*']
   verbs: ['*']
 - apiGroups: ['tmax.io']
-  resources: ['templates','templateinstances','images','registries','namespaceclaims','resourcequotaclaims']
+  resources: ['templates','templateinstances','images','registries','namespaceclaims','resourcequotaclaims','clusterclaims']
   verbs: ['*']
 - apiGroups: ['rbac.authorization.k8s.io']
   resources: ['roles','rolebindings']
