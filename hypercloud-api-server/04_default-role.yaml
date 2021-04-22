@@ -109,7 +109,10 @@ rules:
   resources: ['*']
   verbs: ['*']
 - apiGroups: ['tmax.io']
-  resources: ['templates','templateinstances','images','registries','namespaceclaims','resourcequotaclaims','clusterclaims']
+  resources: ['templates','templateinstances','images','registries']
+  verbs: ['*']
+- apiGroups: ['claim.tmax.io']
+  resources: ['namespaceclaims','resourcequotaclaims','clusterclaims']
   verbs: ['*']
 - apiGroups: ['rbac.authorization.k8s.io']
   resources: ['roles','rolebindings']
@@ -174,8 +177,12 @@ rules:
   resources: ['*']
   verbs: ['*']
 - apiGroups: ['tmax.io']
-  resources: ['template','templateinstances','registries','namespaceclaims']
+  resources: ['template','templateinstances','registries']
   verbs: ['*']
+- apiGroups: ['claim.tmax.io']
+  resources: ['namespaceclaims']
+  verbs: ['*']
+
   
 ---
 
@@ -208,11 +215,15 @@ rules:
     resources: ['namespaces']
     verbs: ['list', 'get']
   - apiGroups: ['tmax.io']
-    resources: ['rolebindingclaims', 'resourcequotaclaims', 'catalogserviceclaims']
+    resources: ['catalogserviceclaims']
     verbs: ['create', 'get', 'list']
   - apiGroups: ['rbac.authorization.k8s.io']
     resources: ['rolebindings', 'roles']
     verbs: ['get', 'list']
+  - apiGroups: ['claim.tmax.io']
+    resources: ['rolebindingclaims','resourcequotaclaims','clusterclaims']
+    verbs: ['create', 'get', 'list']
+
 ---
 
 
