@@ -115,6 +115,14 @@
 		* MAIN_MASTER_IP
 			* 메인 마스터 노드의 IP
 			* ex) 192.168.6.171  
+		* INVITATION_TOKEN_EXPIRED_DATE
+			* 클러스터에 사용자 초대 시 초대 만료 시간
+			* ex) 7days, 1hours, 1minutes
+		* KAFKAX_ADDR
+			* kafka의 IP 주소
+			* KAFKA1_ADDR, KAFKA2_ADDR, KAFKA3_ADDR 모두 변경해야 적용 됨
+			* DNS를 이용해 같은 클러스터 내에 있는 kafak 사용시 {DNS} 그대로 유지
+			* ex) 172.22.6.2:31000
 
 		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
 		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
@@ -127,9 +135,7 @@
 		* MASTER_NODE_ROOT_PASSWORD
 			* 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
 			* ex ) ("passwd111" "passwd222")
-		* INVITATION_TOKEN_EXPIRED_DATE
-			* 클러스터에 사용자 초대 시 초대 만료 시간
-			* ex) 7days, 1hours, 1minutes
+
 	
 
 ## Step 1. installer 실행
