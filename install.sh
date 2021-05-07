@@ -4,6 +4,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
+HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
@@ -51,13 +52,21 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
 
-#Install hypercloud-multi-server
+#Install hypercloud-multi-server and hypercloud-multi-agent
 if [ $HPCD_MODE == "multi" ]; then
   pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
     kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  popd
+
+  pushd $HYPERCLOUD_MULTI_AGENT_HOME
+  sudo sed -i 's/{HPCD_MULTI_AGENT_VERSION}/b'${HPCD_MULTI_AGENT_VERSION}'/g'  ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  if [ $REGISTRY != "{REGISTRY}" ]; then
+    sudo sed -i 's#tmaxcloudck/hypercloud-multi-agent#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-agent#g' ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  fi
+    kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
   popd
 fi
 

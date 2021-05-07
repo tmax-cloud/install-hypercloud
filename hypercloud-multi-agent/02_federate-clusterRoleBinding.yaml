@@ -1,0 +1,16 @@
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedClusterRoleBinding
+metadata:
+  name: hypercloud-admin-clusterrolebinding
+spec:
+  template:
+    subjects:
+    - kind: ServiceAccount
+      name: default
+      namespace: hypercloud5-system
+    roleRef:
+      kind: ClusterRole
+      name: cluster-admin
+      apiGroup: rbac.authorization.k8s.io
+  placement:
+    clusterSelector: {}
