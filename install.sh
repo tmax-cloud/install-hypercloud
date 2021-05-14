@@ -121,7 +121,6 @@ sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCL
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 
-
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  01_init.yaml
@@ -149,6 +148,10 @@ sudo yq e 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
 sudo yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
 sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
+# get hyperauth URL from --oidc-issuer-url and sed to version.config
+KA_YAML=`sudo yq e '.spec.containers[0].command' ./kube-apiserver.yaml`
+HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
+sudo sed -i 's@{HYPERAUTH_URL}@'${HYPERAUTH_URL}'@g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 
 #  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
 i=0
