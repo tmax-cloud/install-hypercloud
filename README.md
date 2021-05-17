@@ -58,38 +58,38 @@
 	```
   * 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
     ``` bash
-	$ sudo docker pull tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
-	$ sudo docker save tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION} > api-server_b{HPCD_API_SERVER_VERSION}.tar
+	$ sudo docker pull tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION} > api-server_b${HPCD_API_SERVER_VERSION}.tar
 
-	$ sudo docker pull tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
-	$ sudo docker save tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION} > single-operator_b{HPCD_SINGLE_OPERATOR_VERSION}.tar
+	$ sudo docker pull tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION} > single-operator_b${HPCD_SINGLE_OPERATOR_VERSION}.tar
 
-	$ sudo docker pull tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
-	$ sudo docker save tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION} > multi-operator_b{HPCD_MULTI_OPERATOR_VERSION}.tar
+	$ sudo docker pull tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION} > multi-operator_b${HPCD_MULTI_OPERATOR_VERSION}.tar
 
-	$ sudo docker pull tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
-	$ sudo docker save tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION} > postgres-cron_b{HPCD_POSTGRES_VERSION}.tar
+	$ sudo docker pull tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
+	$ sudo docker save tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} > postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
 	```
   * tar 파일을 폐쇄망 환경으로 이동시킨 후, registry에 이미지 push
     ``` bash
 	# 이미지 레지스트리 주소
 	$ REGISTRY={IP:PORT}
 	
-	$ sudo docker load < api-server_b{HPCD_API_SERVER_VERSION}.tar
-	$ sudo docker tag tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
-	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b{HPCD_API_SERVER_VERSION}
+	$ sudo docker load < api-server_b${HPCD_API_SERVER_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
 
-	$ sudo docker load < single-operator_b{HPCD_SINGLE_OPERATOR_VERSION}.tar
-	$ sudo docker tag tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
-	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b{HPCD_SINGLE_OPERATOR_VERSION}
+	$ sudo docker load < single-operator_b${HPCD_SINGLE_OPERATOR_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION}
 
-	$ sudo docker load < multi-operator_b{HPCD_MULTI_OPERATOR_VERSION}.tar
-	$ sudo docker tag tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
-	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b{HPCD_MULTI_OPERATOR_VERSION}
+	$ sudo docker load < multi-operator_b${HPCD_MULTI_OPERATOR_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
 
-	$ sudo docker load < postgres-cron_b{HPCD_POSTGRES_VERSION}.tar
-	$ sudo docker tag tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION} ${REGISTRY}/tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
-	$ sudo docker push ${REGISTRY}/tmaxcloudck/postgres-cron:b{HPCD_POSTGRES_VERSION}
+	$ sudo docker load < postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
 	```
 
 ## Step 0. hypercloud.config 설정

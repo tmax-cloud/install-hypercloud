@@ -26,22 +26,19 @@ fi
 
 # Install pkg or binary
 if ! command -v sshpass 2>/dev/null ; then
-  sudo yum install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/sshpass-1.06-9.el8.x86_64.rpm
-  # yum install sshpass
+  sudo yum install sshpass
+  sudo chmod +x /usr/local/bin/sshpass
 fi
 
 if ! command -v yq 2>/dev/null ; then
-  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq &&\
+  sudo yum install yq
   sudo chmod +x /usr/local/bin/yq
 fi
 
 # Install pkg or binary
 if ! command -v kustomize 2>/dev/null ; then
-  sudo curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
-  sudo tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
-  sudo chmod +x kustomize
-  sudo mv kustomize /usr/local/bin/.
-  sudo rm -f "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  sudo yum install kustomize
+  sudo chmod +x /usr/local/bin/kustomize
 fi
 
 # Install hypercloud-single-server
@@ -77,6 +74,7 @@ pushd $HYPERCLOUD_API_SERVER_HOME/pki
   sudo chmod +x *.sh
   sudo touch ~/.rnd
   sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
+  sudo chmod +777 hypercloud-api-server.*
   if [ -z "$(kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
     kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
     --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
@@ -91,13 +89,17 @@ popd
 fi
 
 if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
+  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/html/invite.html
   kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/invite.html -n hypercloud5-system
 fi
 
 if [ -z "$(kubectl get secret -n hypercloud5-system | grep hypercloud-kafka-secret | awk '{print $1}')"]; then
   sudo cp /etc/kubernetes/pki/hypercloud-root-ca.crt $HYPERCLOUD_API_SERVER_HOME/pki/
-  kubectl -n hypercloud5-system create secret generic hypercloud-kafka-secret --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
+  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt
+  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.*
+  kubectl -n hypercloud5-system create secret generic hypercloud-kafka-secret \
   --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt \
+  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
   --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
 fi
 
