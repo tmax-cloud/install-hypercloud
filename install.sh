@@ -31,8 +31,8 @@ if ! command -v sshpass 2>/dev/null ; then
 fi
 
 if ! command -v yq 2>/dev/null ; then
-  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq &&\
-  sudo chmod +x /usr/bin/yq
+  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq &&\
+  sudo chmod +x /usr/local/bin/yq
 fi
 
 # Install pkg or binary
