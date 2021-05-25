@@ -159,6 +159,7 @@ sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 i=0
 sudo cp /etc/kubernetes/pki/audit-policy.yaml .
 sudo cp /etc/kubernetes/pki/audit-webhook-config .
+sudo cp /etc/kubernetes/pki/hypercloud-root-ca.crt .
 for master in "${SUB_MASTER_IP[@]}"
 do
   if [ $master == "$MAIN_MASTER_IP" ]; then
@@ -169,6 +170,7 @@ do
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-policy.yaml ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-policy.yaml
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-webhook-config ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-webhook-config
+  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp hypercloud-root-ca.crt ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/hypercloud-root-ca.crt
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-webhook-mode=batch"'"'"' -i ./kube-apiserver.yaml'
@@ -179,7 +181,7 @@ do
 
   i=$((i+1))
 done
-rm -f audit-policy.yaml audit-webhook-config
+rm -f audit-policy.yaml audit-webhook-config hypercloud-root-ca.crt
 
 sleep 30s
 #  step 7 - check all master is ready
