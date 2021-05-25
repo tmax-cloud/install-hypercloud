@@ -54,6 +54,7 @@
 	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.5.0
 	$ export HPCD_API_SERVER_VERSION=5.0.5.1
 	$ export HPCD_POSTGRES_VERSION=5.0.0.1
+	$ export HPCD_MULTI_AGENT_VERSION=5.0.9.0
 	$ cd $HYPERCLOUD_HOME
 	```
   * 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
@@ -69,6 +70,9 @@
 
 	$ sudo docker pull tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
 	$ sudo docker save tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} > postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
+
+	$ sudo docker pull tmaxcloudck/hypercloud-multi-agent:b${HPCD_MULTI_AGENT_VERSION}
+	$ sudo docker save tmaxcloudck/hypercloud-multi-agent:b${HPCD_MULTI_AGENT_VERSION} > multi-agent:b${HPCD_MULTI_AGENT_VERSION}.tar
 	```
   * tar 파일을 폐쇄망 환경으로 이동시킨 후, registry에 이미지 push
     ``` bash
@@ -90,6 +94,10 @@
 	$ sudo docker load < postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
 	$ sudo docker tag tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
 	$ sudo docker push ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
+
+	$ sudo docker load < multi-agent_b${HPCD_MULTI_AGENT_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/hypercloud-multi-agent:b${HPCD_MULTI_AGENT_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-multi-agent:b${HPCD_MULTI_AGENT_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-multi-agent:b${HPCD_MULTI_AGENT_VERSION}
 	```
 
 ## Step 0. hypercloud.config 설정
@@ -111,6 +119,9 @@
 		* HPCD_POSTGRES_VERSION
 			* postgres의 버전
 			* ex) 5.0.0.1
+		* HPCD_MULTI_AGENT_VERSION
+			* hypercloud-multi-agent의 버전
+			* ex) 5.0.9.0
 		* REGISTRY
 			* 폐쇄망 사용시 image repository의 주소
 			* 폐쇄망 아닐시 {REGISTRY} 그대로 유지
