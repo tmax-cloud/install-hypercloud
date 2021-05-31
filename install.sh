@@ -26,18 +26,18 @@ fi
 
 # Install pkg or binary
 if ! command -v sshpass 2>/dev/null ; then
-  sudo yum install sshpass
+  sudo yum install -y sshpass
   sudo chmod +x /usr/local/bin/sshpass
 fi
 
 if ! command -v yq 2>/dev/null ; then
-  sudo yum install yq
+  sudo yum install -y yq
   sudo chmod +x /usr/local/bin/yq
 fi
 
 # Install pkg or binary
 if ! command -v kustomize 2>/dev/null ; then
-  sudo yum install kustomize
+  sudo yum install -y kustomize
   sudo chmod +x /usr/local/bin/kustomize
 fi
 
@@ -45,6 +45,7 @@ fi
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-single-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-single-operator#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
@@ -54,6 +55,7 @@ if [ $HPCD_MODE == "multi" ]; then
   pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
     kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   popd
@@ -165,7 +167,7 @@ do
   if [ $master == "$MAIN_MASTER_IP" ]; then
     continue
   fi
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
+  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo yum install -y yq
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo chmod +x /usr/bin/yq
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-policy.yaml ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-policy.yaml
