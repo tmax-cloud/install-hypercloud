@@ -21,22 +21,14 @@
   
   * <관리자로 로그인>하여 사용자의 클러스터클레임 요청을 승인/거절합니다. 
 ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/approval(1).png)
+
 ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/approval(2).png)
 
-
   * <사용자로 로그인>하여 클러스터클레임의 상태가 Success임을 확인합니다.
+![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/claim-success.png)
+
   * 클러스터 탭에서 클러스터의 상태가 Provisioning임을 확인합니다.
+![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/cluster-provisioning.png)
+
   * 클러스터 생성에는 10 ~ 20분이 소모됩니다. 클러스터 생성이 완료되면 클러스터의 상태가 Provisioned로 변경됩니다. 
-
-
-
- 
-  
-  * hypercloud5 그룹을 default로 설정                             
-  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/set-hypercloud5-as-default.png)
-  
-  * client-scope에서 group에 대한 client-scope 생성
-  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/create-client-scope.PNG)
-  
-  * 위에서 만든 client-scope을 client에 추가
-  ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG)
+![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/cluster-provisioned.png)
