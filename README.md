@@ -19,8 +19,8 @@
   * 수동 설치 가이드
     * 버전 설정
 	  ```
-	  YQ_VERSION=v4.5.0
-	  KUSTOMIZE_VERSION=v3.8.5
+	  $ YQ_VERSION=v4.5.0
+	  $ KUSTOMIZE_VERSION=v3.8.5
 	  ```
     * yq
 	  ```
