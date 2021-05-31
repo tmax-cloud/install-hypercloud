@@ -20,9 +20,7 @@
 ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/awaiting.png)
   
   * <관리자로 로그인>하여 사용자의 클러스터클레임 요청을 승인/거절합니다. 
-![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/approval(1).png)
-
-![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/approval(2).png)
+![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/approval(3).png)
 
   * <사용자로 로그인>하여 클러스터클레임의 상태가 Success임을 확인합니다.
 ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/multi-cluster-figure/claim-success.png)
