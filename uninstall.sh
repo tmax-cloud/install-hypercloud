@@ -4,7 +4,6 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
-HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
 
 source $SCRIPTDIR/hypercloud.config
 set -x
@@ -46,16 +45,6 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     echo "Failed to delete hypercloud-multi-operator"
   fi
 popd
-
-# step 2.5 - delete hypercloud-multi-agent
-pushd $HYPERCLOUD_MULTI_AGENT_HOME
-  timeout 5m kubectl delete -f 03_federate-deployment.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete hypercloud-multi-agent"
-  fi
-popd
-
 
 
 # step 3 - delete hypercloud-single-operator
