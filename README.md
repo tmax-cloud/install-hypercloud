@@ -18,6 +18,27 @@
         
 
 ## Prerequisite
+* 필수 패키지
+  * yq, sshpass, kustomize
+  * 수동 설치 가이드
+    * 버전 설정
+	  ```
+	  $ YQ_VERSION=v4.5.0
+	  $ KUSTOMIZE_VERSION=v3.8.5
+	  ```
+    * yq
+	  ```
+	  $ sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq &&\
+      sudo chmod +x /usr/local/bin/yq
+	  ```
+	* kustomize
+	  ```
+	  $ sudo curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+      $ sudo tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+      $ sudo chmod +x kustomize
+      $ sudo mv kustomize /usr/local/bin/.
+      $ sudo rm -f "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+	  ```
 * 필수 모듈  
   * [RookCeph](https://github.com/tmax-cloud/hypersds-wiki/)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
@@ -62,6 +83,9 @@
 	$ sudo docker pull tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
 	$ sudo docker save tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION} > api-server_b${HPCD_API_SERVER_VERSION}.tar
 
+	$ sudo docker pull gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+	$ sudo docker save gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0 > kube-rbac-proxy:v0.5.0.tar
+
 	$ sudo docker pull tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION}
 	$ sudo docker save tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION} > single-operator_b${HPCD_SINGLE_OPERATOR_VERSION}.tar
 
@@ -82,6 +106,10 @@
 	$ sudo docker load < api-server_b${HPCD_API_SERVER_VERSION}.tar
 	$ sudo docker tag tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
 	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-api-server:b${HPCD_API_SERVER_VERSION}
+
+	$ sudo docker load < kube-rbac-proxy:v0.5.0.tar
+	$ sudo docker tag gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0 ${REGISTRY}/gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+	$ sudo docker push ${REGISTRY}/gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
 
 	$ sudo docker load < single-operator_b${HPCD_SINGLE_OPERATOR_VERSION}.tar
 	$ sudo docker tag tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-single-operator:b${HPCD_SINGLE_OPERATOR_VERSION}

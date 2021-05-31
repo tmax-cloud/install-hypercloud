@@ -24,27 +24,32 @@ if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
    kubectl create ns hypercloud5-system
 fi
 
+#### 5.0 브랜치 merge 할 때는 제외 ####
 # Install pkg or binary
 if ! command -v sshpass 2>/dev/null ; then
-  sudo yum install sshpass
-  sudo chmod +x /usr/local/bin/sshpass
+  sudo yum install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/s/sshpass-1.06-9.el8.x86_64.rpm
 fi
 
 if ! command -v yq 2>/dev/null ; then
-  sudo yum install yq
+  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq &&\
   sudo chmod +x /usr/local/bin/yq
 fi
 
 # Install pkg or binary
 if ! command -v kustomize 2>/dev/null ; then
-  sudo yum install kustomize
-  sudo chmod +x /usr/local/bin/kustomize
+  sudo curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  sudo tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+  sudo chmod +x kustomize
+  sudo mv kustomize /usr/local/bin/.
+  sudo rm -f "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
 fi
+#######################################
 
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-single-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-single-operator#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
@@ -54,6 +59,7 @@ if [ $HPCD_MODE == "multi" ]; then
   pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
     kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   popd
@@ -165,8 +171,8 @@ do
   if [ $master == "$MAIN_MASTER_IP" ]; then
     continue
   fi
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo chmod +x /usr/bin/yq
+  # sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/bin/yq
+  # sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo chmod +x /usr/bin/yq
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-policy.yaml ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-policy.yaml
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-webhook-config ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-webhook-config
