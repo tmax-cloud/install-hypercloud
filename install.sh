@@ -23,23 +23,6 @@ if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
    kubectl create ns hypercloud5-system
 fi
 
-# Install pkg or binary
-if ! command -v sshpass 2>/dev/null ; then
-  sudo yum install -y sshpass
-  sudo chmod +x /usr/local/bin/sshpass
-fi
-
-if ! command -v yq 2>/dev/null ; then
-  sudo yum install -y yq
-  sudo chmod +x /usr/local/bin/yq
-fi
-
-# Install pkg or binary
-if ! command -v kustomize 2>/dev/null ; then
-  sudo yum install -y kustomize
-  sudo chmod +x /usr/local/bin/kustomize
-fi
-
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   if [ $REGISTRY != "{REGISTRY}" ]; then
@@ -158,8 +141,6 @@ do
   if [ $master == "$MAIN_MASTER_IP" ]; then
     continue
   fi
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo yum install -y yq
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master"  sudo chmod +x /usr/bin/yq
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-policy.yaml ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-policy.yaml
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-webhook-config ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-webhook-config

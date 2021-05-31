@@ -14,6 +14,28 @@
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)        
 
 ## Prerequisite
+* 필수 패키지
+  * yq, sshpass, kustomize
+  * 수동 설치 가이드
+    * 버전 설정
+	  ```
+	  YQ_VERSION=v4.5.0
+	  KUSTOMIZE_VERSION=v3.8.5
+	  ```
+    * yq
+	  ```
+	  $ sudo wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq &&\
+      sudo chmod +x /usr/local/bin/yq
+	  ```
+	* kustomize
+	  ```
+	  $ sudo curl -L -O "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+      $ sudo tar -xzvf "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+      $ sudo chmod +x kustomize
+      $ sudo mv kustomize /usr/local/bin/.
+      $ sudo rm -f "kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz"
+	  ```
+
 * 필수 모듈  
   * [RookCeph](https://github.com/tmax-cloud/hypersds-wiki/)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
