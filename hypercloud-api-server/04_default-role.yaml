@@ -113,7 +113,7 @@ rules:
   verbs: ['*']
 - apiGroups: ['claim.tmax.io']
   resources: ['namespaceclaims','resourcequotaclaims','clusterclaims']
-  verbs: ['*']
+  verbs: ["get", "list", "create", "update", "patch", "watch"]
 - apiGroups: ['cluster.tmax.io']
   resources: ['clustermanagers']
   verbs: ['*']
@@ -138,29 +138,6 @@ rules:
   resources: ['storageclasses']
   verbs: ['get', 'list']
   
----
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: namespace-listget
-  labels:
-    purpose: for-nsc
-    madeby: tmax
-rules:
-  - apiGroups: ['']
-    resources: ['namespaces']
-    verbs: ['list', 'get']
-  - apiGroups: ['tmax.io']
-    resources: ['catalogserviceclaims']
-    verbs: ['create', 'get', 'list']
-  - apiGroups: ['rbac.authorization.k8s.io']
-    resources: ['rolebindings', 'roles']
-    verbs: ['get', 'list']
-  - apiGroups: ['claim.tmax.io']
-    resources: ['rolebindingclaims','resourcequotaclaims','clusterclaims']
-    verbs: ['create', 'get', 'list']
-
 ---
 
 
