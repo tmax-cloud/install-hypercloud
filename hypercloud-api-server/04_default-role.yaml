@@ -138,5 +138,20 @@ rules:
   resources: ['storageclasses']
   verbs: ['get', 'list']
   
+---
 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterrole-ns-get
+  labels:
+    purpose: for-ns-invited-user
+    madeby: tmax
+rules:
+  - apiGroups: ['']
+    resources: ['namespaces']
+    verbs: ['get']
+  - apiGroups: ['']
+    resources: ['namespaces/status']
+    verbs: ['get']
 
