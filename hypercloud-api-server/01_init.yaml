@@ -107,7 +107,32 @@ data:
 
       versionProbe:
 
-    - name: HyperCloud-Multi-Operator
+    - name: HyperCloud API Server
+      namespace: hypercloud5-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - hypercloud5=api-server
+          versionLabel:
+          - hypercloud5=api-server
+      readinessProbe:
+
+      versionProbe:          
+    
+    - name: HyperCloud Single Operator
+      namespace: hypercloud5-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - hypercloud=single-operator
+          versionLabel:
+          - hypercloud=single-operator
+      readinessProbe:
+
+      versionProbe:
+        container: manager
+
+    - name: HyperCloud Multi Operator
       namespace: hypercloud5-system
       selector:
         matchLabels:
@@ -120,20 +145,7 @@ data:
       versionProbe:
         container: manager
       
-    - name: HyperCloud-Single-Operator
-      namespace: hypercloud5-system
-      selector:
-        matchLabels:
-          statusLabel:
-          - hypercloud=single-operator
-          versionLabel:
-          - hypercloud=single-operator
-      readinessProbe:
-
-      versionProbe:
-        container: manager
-
-    - name: HyperCloud-Console
+    - name: HyperCloud Console
       namespace: console-system
       selector:
         matchLabels:
@@ -144,18 +156,20 @@ data:
       readinessProbe:
 
       versionProbe:
+       container: console
 
-    - name: HyperCloud-Api-Server
-      namespace: hypercloud5-system
+    - name: HyperCloud Console Operator
+      namespace: console-system
       selector:
         matchLabels:
           statusLabel:
-          - hypercloud5=api-server
+          - app=console
           versionLabel:
-          - hypercloud5=api-server
+          - app=console
       readinessProbe:
 
       versionProbe:
+        container: manager
 
     - name: HyperAuth
       namespace:
@@ -179,6 +193,30 @@ data:
 
       versionProbe:
 
+    - name: MetalLB
+      namespace: metallb-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=metallb
+          versionLabel:
+          - app=metallb
+      readinessProbe:
+
+      versionProbe:
+
+    - name: Nginx Ingress Controller
+      namespace: ingress-nginx-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - app.kubernetes.io/name=ingress-nginx-system
+          versionLabel:
+          - app.kubernetes.io/name=ingress-nginx-system
+      readinessProbe:
+
+      versionProbe:
+
     - name: Prometheus
       namespace: monitoring
       selector:
@@ -194,20 +232,6 @@ data:
           scheme: HTTP
       versionProbe:
         container: prometheus
-
-    - name: Grafana
-      namespace: monitoring
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=grafana
-          versionLabel:
-          - app=grafana
-      readinessProbe:
-        httpGet:
-          path: /api/health
-          port: 3000
-      versionProbe:
 
     - name: Tekton
       namespace: tekton-pipelines
@@ -248,14 +272,53 @@ data:
 
       versionProbe:
 
-    - name: TemplateServiceBroker
-      namespace: tsb-ns
+    - name: CAPI
+      namespace: capi-system
       selector:
         matchLabels:
           statusLabel:
-          - app=template-service-broker
+          - cluster.x-k8s.io/provider=cluster-api
           versionLabel:
-          - app=template-service-broker
+          - cluster.x-k8s.io/provider=cluster-api
+      readinessProbe:
+
+      versionProbe:
+        container: manager
+
+    - name: KubeFed
+      namespace: kube-federation-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - kubefed-control-plane=controller-manager
+          versionLabel:
+          - kubefed-control-plane=controller-manager
+      readinessProbe:
+
+      versionProbe:
+
+    - name: Grafana
+      namespace: monitoring
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=grafana
+          versionLabel:
+          - app=grafana
+      readinessProbe:
+        httpGet:
+          path: /api/health
+          port: 3000
+      versionProbe:
+
+    - name: Kibana
+      namespace: kube-logging
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=kibana
+          versionLabel:
+          - app=kibana
       readinessProbe:
 
       versionProbe:
