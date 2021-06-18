@@ -58,7 +58,7 @@
   * client-scope에서 group에 대한 client-scope 생성
   ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/create-client-scope.PNG)
   
-  * 위에서 만든 client-scope을 client에 추가
+  * 위에서 만든 client-scope을 hypercloud5 client에 들어가서 추가
   ![](https://github.com/tmax-cloud/install-hypercloud/blob/5.0/figure/add-client-scope.PNG)
 
 ## 폐쇄망 구축 가이드
