@@ -74,7 +74,7 @@ metadata:
   name: postgres-data
   namespace: hypercloud5-system
 spec:
-  storageClassName: csi-cephfs-sc
+  #storageClassName: csi-cephfs-sc
   accessModes:
     - ReadWriteOnce
   resources:
