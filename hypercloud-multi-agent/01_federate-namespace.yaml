@@ -1,8 +1,8 @@
 apiVersion: types.kubefed.io/v1beta1
 kind: FederatedNamespace
 metadata:
-  name: hypercloud5-system
-  namespace: hypercloud5-system
+  name: kube-federation-system
+  namespace: kube-federation-system
 spec:
   placement:
     clusterSelector: {}

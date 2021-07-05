@@ -94,10 +94,10 @@ spec:
               enum:
               - Awaiting
               - Admitted
-              - Success
+              - Approved
               - Rejected
               - Error
-              - Deleted
+              - ClusterDeleted
               type: string
             reason:
               type: string
@@ -177,14 +177,6 @@ spec:
             of an object. Servers should convert recognized schemas to the latest
             internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
           type: string
-        fakeMetadata:
-          description: 'EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE:
-            json tags are required.  Any new fields you add must have json tags for
-            the fields to be serialized.'
-          properties:
-            fakename:
-              type: string
-          type: object
         kind:
           description: 'Kind is a string value representing the REST resource this
             object represents. Servers may infer this from the endpoint the client
@@ -223,35 +215,71 @@ spec:
         status:
           description: ClusterManagerStatus defines the observed state of ClusterManager
           properties:
+            agentEndpoint:
+              type: string
+            agentReady:
+              type: boolean
+            controlPlaneEndpoint:
+              type: string
+            controlPlaneReady:
+              type: boolean
             masterRun:
               type: integer
-            nodes:
+            nodeInfo:
               items:
+                description: NodeSystemInfo is a set of ids/uuids to uniquely identify
+                  the node.
                 properties:
-                  ip:
+                  architecture:
+                    description: The Architecture reported by the node
                     type: string
-                  isMaster:
-                    type: boolean
-                  name:
+                  bootID:
+                    description: Boot ID reported by the node.
                     type: string
-                  resources:
-                    items:
-                      properties:
-                        capacity:
-                          type: string
-                        type:
-                          type: string
-                        usage:
-                          type: string
-                      type: object
-                    type: array
+                  containerRuntimeVersion:
+                    description: ContainerRuntime Version reported by the node through
+                      runtime remote API (e.g. docker://1.5.0).
+                    type: string
+                  kernelVersion:
+                    description: Kernel Version reported by the node from 'uname -r'
+                      (e.g. 3.16.0-0.bpo.4-amd64).
+                    type: string
+                  kubeProxyVersion:
+                    description: KubeProxy Version reported by the node.
+                    type: string
+                  kubeletVersion:
+                    description: Kubelet Version reported by the node.
+                    type: string
+                  machineID:
+                    description: 'MachineID reported by the node. For unique machine
+                      identification in the cluster this field is preferred. Learn
+                      more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html'
+                    type: string
+                  operatingSystem:
+                    description: The Operating System reported by the node
+                    type: string
+                  osImage:
+                    description: OS Image reported by the node from /etc/os-release
+                      (e.g. Debian GNU/Linux 7 (wheezy)).
+                    type: string
+                  systemUUID:
+                    description: SystemUUID reported by the node. For unique machine
+                      identification MachineID is preferred. This field is specific
+                      to Red Hat hosts https://access.redhat.com/documentation/en-US/Red_Hat_Subscription_Management/1/html/RHSM/getting-system-uuid.html
+                    type: string
+                required:
+                - architecture
+                - bootID
+                - containerRuntimeVersion
+                - kernelVersion
+                - kubeProxyVersion
+                - kubeletVersion
+                - machineID
+                - operatingSystem
+                - osImage
+                - systemUUID
                 type: object
               type: array
-            observedGeneration:
-              description: ObservedGeneration is the latest generation observed by
-                the controller.
-              format: int64
-              type: integer
             phase:
               type: string
             provider:
@@ -260,6 +288,160 @@ spec:
               type: boolean
             version:
               type: string
+            workerRun:
+              type: integer
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud-multi-operator-serving-cert
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: clusterregistrations.cluster.tmax.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.phase
+    description: cluster status phase
+    name: Phase
+    type: string
+  - JSONPath: .status.reason
+    description: cluster status phase
+    name: Reason
+    type: string
+  group: cluster.tmax.io
+  names:
+    kind: ClusterRegistration
+    listKind: ClusterRegistrationList
+    plural: clusterregistrations
+    shortNames:
+    - clr
+    singular: clusterregistration
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: ClusterRegistration is the Schema for the clusterregistrations
+        API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: ClusterRegistrationSpec defines the desired state of ClusterRegistration
+          properties:
+            clusterName:
+              description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                Important: Run "make" to regenerate code after modifying this file
+                The name of the cluster to be created'
+              type: string
+            kubeConfig:
+              description: Foo is an example field of ClusterRegistration. Edit ClusterRegistration_types.go
+                to remove/update
+              type: string
+          required:
+          - clusterName
+          type: object
+        status:
+          description: ClusterRegistrationStatus defines the observed state of ClusterRegistration
+          properties:
+            masterNum:
+              type: integer
+            masterRun:
+              type: integer
+            nodeInfo:
+              items:
+                description: NodeSystemInfo is a set of ids/uuids to uniquely identify
+                  the node.
+                properties:
+                  architecture:
+                    description: The Architecture reported by the node
+                    type: string
+                  bootID:
+                    description: Boot ID reported by the node.
+                    type: string
+                  containerRuntimeVersion:
+                    description: ContainerRuntime Version reported by the node through
+                      runtime remote API (e.g. docker://1.5.0).
+                    type: string
+                  kernelVersion:
+                    description: Kernel Version reported by the node from 'uname -r'
+                      (e.g. 3.16.0-0.bpo.4-amd64).
+                    type: string
+                  kubeProxyVersion:
+                    description: KubeProxy Version reported by the node.
+                    type: string
+                  kubeletVersion:
+                    description: Kubelet Version reported by the node.
+                    type: string
+                  machineID:
+                    description: 'MachineID reported by the node. For unique machine
+                      identification in the cluster this field is preferred. Learn
+                      more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html'
+                    type: string
+                  operatingSystem:
+                    description: The Operating System reported by the node
+                    type: string
+                  osImage:
+                    description: OS Image reported by the node from /etc/os-release
+                      (e.g. Debian GNU/Linux 7 (wheezy)).
+                    type: string
+                  systemUUID:
+                    description: SystemUUID reported by the node. For unique machine
+                      identification MachineID is preferred. This field is specific
+                      to Red Hat hosts https://access.redhat.com/documentation/en-US/Red_Hat_Subscription_Management/1/html/RHSM/getting-system-uuid.html
+                    type: string
+                required:
+                - architecture
+                - bootID
+                - containerRuntimeVersion
+                - kernelVersion
+                - kubeProxyVersion
+                - kubeletVersion
+                - machineID
+                - operatingSystem
+                - osImage
+                - systemUUID
+                type: object
+              type: array
+            phase:
+              type: string
+            provider:
+              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                of cluster Important: Run "make" to regenerate code after modifying
+                this file'
+              type: string
+            ready:
+              type: boolean
+            reason:
+              type: string
+            version:
+              type: string
+            workerNum:
+              type: integer
             workerRun:
               type: integer
           type: object
@@ -328,8 +510,10 @@ webhooks:
     - v1alpha1
     operations:
     - UPDATE
+    - DELETE
     resources:
     - clusterclaims
+    - clusterclaims/status
 - clientConfig:
     caBundle: Cg==
     service:
@@ -347,6 +531,24 @@ webhooks:
     - UPDATE
     resources:
     - clustermanagers
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: hypercloud-multi-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-cluster-tmax-io-v1alpha1-clusterregistration
+  failurePolicy: Fail
+  name: vclusterregistration.kb.io
+  rules:
+  - apiGroups:
+    - cluster.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - clusterregistrations
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -416,18 +618,6 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ""
-  resources:
-  - services
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - claim.tmax.io
   resources:
   - clusterclaims
@@ -468,9 +658,9 @@ rules:
   - patch
   - update
 - apiGroups:
-  - cluster.x-k8s.io
+  - cluster.tmax.io
   resources:
-  - clusters
+  - clusterregistrations
   verbs:
   - create
   - delete
@@ -480,9 +670,9 @@ rules:
   - update
   - watch
 - apiGroups:
-  - cluster.x-k8s.io
+  - cluster.tmax.io
   resources:
-  - clusters/status
+  - clusterregistrations/status
   verbs:
   - get
   - patch
@@ -527,14 +717,6 @@ rules:
   - get
   - patch
   - update
-- apiGroups:
-  - core.kubefed.io
-  resources:
-  - kubefedclusters
-  verbs:
-  - get
-  - list
-  - watch
 - apiGroups:
   - core.kubefed.io
   resources:
@@ -629,18 +811,6 @@ rules:
   - get
   - patch
   - update
-- apiGroups:
-  - types.kubefed.io
-  resources:
-  - federatedconfigmaps
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
 - apiGroups:
   - types.kubefed.io
   resources:
@@ -785,7 +955,7 @@ spec:
         - --enable-leader-election
         command:
         - /manager
-        image: tmaxcloudck/hypercloud-multi-operator:b5.0.5.0
+        image: tmaxcloudck/hypercloud-multi-operator:b5.0.17.1
         name: manager
         ports:
         - containerPort: 9443

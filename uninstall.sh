@@ -49,7 +49,10 @@ popd
 
 # step 2.5 - delete hypercloud-multi-agent
 pushd $HYPERCLOUD_MULTI_AGENT_HOME
-  timeout 5m kubectl delete -f 03_federate-deployment.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/00_enable-federate-resource.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/01_federate-namespace.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/02_federate-clusterRoleBinding.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-multi-agent"
