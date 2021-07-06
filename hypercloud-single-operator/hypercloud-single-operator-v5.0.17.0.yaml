@@ -45,10 +45,10 @@ spec:
         metadata:
           type: object
         resourceName:
+          description: namespaceName is name of the namespace which will be created
           type: string
         spec:
-          description: ResourceQuotaSpec defines the desired hard limits to enforce
-            for Quota.
+          description: Spec is ResourceQuotaSpec of NamespaceClaim
           properties:
             hard:
               additionalProperties:
@@ -58,87 +58,39 @@ spec:
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               description: 'hard is the set of desired hard limits for each named
-                resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/'
+                resource. "limits.cpu" and "limits.memory" must be required. More
+                info: https://kubernetes.io/docs/concepts/policy/resource-quotas/'
               type: object
-            scopeSelector:
-              description: scopeSelector is also a collection of filters like scopes
-                that must match each object tracked by a quota but expressed using
-                ScopeSelectorOperator in combination with possible values. For a resource
-                to match, both scopes AND scopeSelector (if specified in spec), must
-                be matched.
-              properties:
-                matchExpressions:
-                  description: A list of scope selector requirements by scope of the
-                    resources.
-                  items:
-                    description: A scoped-resource selector requirement is a selector
-                      that contains values, a scope name, and an operator that relates
-                      the scope name and values.
-                    properties:
-                      operator:
-                        description: Represents a scope's relationship to a set of
-                          values. Valid operators are In, NotIn, Exists, DoesNotExist.
-                        type: string
-                      scopeName:
-                        description: The name of the scope that the selector applies
-                          to.
-                        type: string
-                      values:
-                        description: An array of string values. If the operator is
-                          In or NotIn, the values array must be non-empty. If the
-                          operator is Exists or DoesNotExist, the values array must
-                          be empty. This array is replaced during a strategic merge
-                          patch.
-                        items:
-                          type: string
-                        type: array
-                    required:
-                    - operator
-                    - scopeName
-                    type: object
-                  type: array
-              type: object
-            scopes:
-              description: A collection of filters that must match each object tracked
-                by a quota. If not specified, the quota matches all objects.
-              items:
-                description: A ResourceQuotaScope defines a filter that must match
-                  each object tracked by a quota
-                type: string
-              type: array
-          type: object
-        specLimit:
-          properties:
-            limitCpu:
-              type: string
-            limitMemory:
-              type: string
           required:
-          - limitCpu
-          - limitMemory
+          - hard
           type: object
         status:
-          description: NamespaceClaimStatus defines the observed state of NamespaceClaim
+          description: Status shows the present status of the NamespaceClaim
           properties:
             lastTransitionTime:
+              description: LastTransitionTime shows the time when the status changed
+                in last
               format: date-time
               type: string
             message:
+              description: Message shows log when the status changed in last
               type: string
             reason:
+              description: Reason shows why the status changed in last
               type: string
             status:
+              description: Status shows the present status of the NamespaceClaim
               enum:
               - Awaiting
-              - Success
-              - Reject
+              - Approved
+              - Rejected
               - Error
               - Namespace Deleted
               type: string
           type: object
       required:
       - resourceName
-      - specLimit
+      - spec
       type: object
   version: v1alpha1
   versions:
@@ -199,10 +151,11 @@ spec:
         metadata:
           type: object
         resourceName:
+          description: resourcequotaName is name of the resource quota which will
+            be created
           type: string
         spec:
-          description: ResourceQuotaSpec defines the desired hard limits to enforce
-            for Quota.
+          description: Spec is ResourceQuotaSpec of NamespaceClaim
           properties:
             hard:
               additionalProperties:
@@ -212,86 +165,39 @@ spec:
                 pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                 x-kubernetes-int-or-string: true
               description: 'hard is the set of desired hard limits for each named
-                resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/'
+                resource. "limits.cpu" and "limits.memory" must be required. More
+                info: https://kubernetes.io/docs/concepts/policy/resource-quotas/'
               type: object
-            scopeSelector:
-              description: scopeSelector is also a collection of filters like scopes
-                that must match each object tracked by a quota but expressed using
-                ScopeSelectorOperator in combination with possible values. For a resource
-                to match, both scopes AND scopeSelector (if specified in spec), must
-                be matched.
-              properties:
-                matchExpressions:
-                  description: A list of scope selector requirements by scope of the
-                    resources.
-                  items:
-                    description: A scoped-resource selector requirement is a selector
-                      that contains values, a scope name, and an operator that relates
-                      the scope name and values.
-                    properties:
-                      operator:
-                        description: Represents a scope's relationship to a set of
-                          values. Valid operators are In, NotIn, Exists, DoesNotExist.
-                        type: string
-                      scopeName:
-                        description: The name of the scope that the selector applies
-                          to.
-                        type: string
-                      values:
-                        description: An array of string values. If the operator is
-                          In or NotIn, the values array must be non-empty. If the
-                          operator is Exists or DoesNotExist, the values array must
-                          be empty. This array is replaced during a strategic merge
-                          patch.
-                        items:
-                          type: string
-                        type: array
-                    required:
-                    - operator
-                    - scopeName
-                    type: object
-                  type: array
-              type: object
-            scopes:
-              description: A collection of filters that must match each object tracked
-                by a quota. If not specified, the quota matches all objects.
-              items:
-                description: A ResourceQuotaScope defines a filter that must match
-                  each object tracked by a quota
-                type: string
-              type: array
-          type: object
-        specLimit:
-          properties:
-            limitCpu:
-              type: string
-            limitMemory:
-              type: string
           required:
-          - limitCpu
-          - limitMemory
+          - hard
           type: object
         status:
-          description: ResourceQuotaClaimStatus defines the observed state of ResourceQuotaClaim
+          description: Status shows the present status of the ResourceQuotaClaim
           properties:
             lastTransitionTime:
+              description: LastTransitionTime shows the time when the status changed
+                in last
               format: date-time
               type: string
             message:
+              description: Message shows log when the status changed in last
               type: string
             reason:
+              description: Reason shows why the status changed in last
               type: string
             status:
+              description: Status shows the present status of the NamespaceClaim
               enum:
               - Awaiting
-              - Success
-              - Reject
+              - Approved
+              - Rejected
               - Error
+              - Resource Quota Deleted
               type: string
           type: object
       required:
       - resourceName
-      - specLimit
+      - spec
       type: object
   version: v1alpha1
   versions:
@@ -351,6 +257,7 @@ spec:
         metadata:
           type: object
         resourceName:
+          description: rolebindingName is name of the role binding which will be created
           type: string
         roleRef:
           description: RoleRef contains information that points to the role being
@@ -371,24 +278,33 @@ spec:
           - name
           type: object
         status:
-          description: RoleBindingClaimStatus defines the observed state of RoleBindingClaim
+          description: Status shows the present status of the RoleBindingClaim
           properties:
             lastTransitionTime:
+              description: LastTransitionTime shows the time when the status changed
+                in last
               format: date-time
               type: string
             message:
+              description: Message shows log when the status changed in last
               type: string
             reason:
+              description: Reason shows why the status changed in last
               type: string
             status:
+              description: Status shows the present status of the NamespaceClaim
               enum:
               - Awaiting
-              - Success
-              - Reject
+              - Approved
+              - Rejected
               - Error
+              - Role Binding Deleted
               type: string
           type: object
         subjects:
+          description: Subjects contains a reference to the object or user identities
+            a role binding applies to.  This can either hold a direct API object reference,
+            or a value for non-objects such as user and group names.
           items:
             description: Subject contains a reference to the object or user identities
               a role binding applies to.  This can either hold a direct API object
@@ -461,6 +377,7 @@ webhooks:
     - UPDATE
     resources:
     - namespaceclaims
+    - namespaceclaims/status
 - clientConfig:
     caBundle: Cg==
     service:
@@ -479,6 +396,25 @@ webhooks:
     - UPDATE
     resources:
     - resourcequotaclaims
+    - resourcequotaclaims/status
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: hypercloud-single-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-rolebindingclaim
+  failurePolicy: Fail
+  name: vrolebindingclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - rolebindingclaims/status
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -526,6 +462,26 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io.tmax.io
+  resources:
+  - rolebindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io.tmax.io
+  resources:
+  - rolebindings/status
+  verbs:
+  - get
+  - patch
+  - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -662,7 +618,7 @@ spec:
         - --enable-leader-election
         command:
         - /manager
-        image: tmaxcloudck/hypercloud-single-operator:b5.0.0.13
+        image: tmaxcloudck/hypercloud-single-operator:b5.0.17.0
         name: manager
         ports:
         - containerPort: 9443
@@ -691,7 +647,7 @@ spec:
       - name: cert
         secret:
           defaultMode: 420
-          secretName: webhook-server-cert
+          secretName: hypercloud-single-operator-webhook-server-cert
       - emptyDir: null
         name: operator-log-mnt
 ---
@@ -707,7 +663,7 @@ spec:
   issuerRef:
     kind: Issuer
     name: hypercloud-single-operator-selfsigned-issuer
-  secretName: webhook-server-cert
+  secretName: hypercloud-single-operator-webhook-server-cert
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
