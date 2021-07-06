@@ -4,16 +4,16 @@
 
 ## 구성 요소 및 버전
 * hypercloud-api-server
-	* image: [tmaxcloudck/hypercloud-api-server:b5.0.10.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	* image: [tmaxcloudck/hypercloud-api-server:b5.0.17.1](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	* git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 * hypercloud-single-operator
-	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.10.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	* image: [tmaxcloudck/hypercloud-single-operator:b5.0.17.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	* git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 * hypercloud-multi-operator
-	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.10.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.17.1](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 * hypercloud-multi-agent
-	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.10.0](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
+	* image: [tmaxcloudck/hypercloud-multi-operator:b5.0.17.3](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
 	* git: [https://github.com/tmax-cloud/hypercloud-multi-agent](https://github.com/tmax-cloud/hypercloud-multi-agent)
         
 
@@ -71,11 +71,11 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.10.0
-	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.10.0
-	$ export HPCD_API_SERVER_VERSION=5.0.10.0
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.17.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.17.1
+	$ export HPCD_API_SERVER_VERSION=5.0.17.1
 	$ export HPCD_POSTGRES_VERSION=5.0.0.1
-	$ export HPCD_MULTI_AGENT_VERSION=5.0.10.0
+	$ export HPCD_MULTI_AGENT_VERSION=5.0.17.3
 	$ cd $HYPERCLOUD_HOME
 	```
   * 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
@@ -137,19 +137,19 @@
 			* ex) single / multi
 		* HPCD_SINGLE_OPERATOR_VERSION
 			* hypercloud-single-operator의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.0
 		* HPCD_MULTI_OPERATOR_VERSION
 			* hypercloud-multi-operator의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.1
 		* HPCD_API_SERVER_VERSION
 			* hypercloud-api-server의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.1
 		* HPCD_POSTGRES_VERSION
 			* postgres의 버전
 			* ex) 5.0.0.1
 		* HPCD_MULTI_AGENT_VERSION
 			* hypercloud-multi-agent의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.3
 		* REGISTRY
 			* 폐쇄망 사용시 image repository의 주소
 			* 폐쇄망 아닐시 {REGISTRY} 그대로 유지
