@@ -71,11 +71,11 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.10.0
-	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.10.0
-	$ export HPCD_API_SERVER_VERSION=5.0.10.0
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.17.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.17.1
+	$ export HPCD_API_SERVER_VERSION=5.0.17.1
 	$ export HPCD_POSTGRES_VERSION=5.0.0.1
-	$ export HPCD_MULTI_AGENT_VERSION=5.0.10.0
+	$ export HPCD_MULTI_AGENT_VERSION=5.0.17.3
 	$ cd $HYPERCLOUD_HOME
 	```
   * 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
@@ -137,19 +137,19 @@
 			* ex) single / multi
 		* HPCD_SINGLE_OPERATOR_VERSION
 			* hypercloud-single-operator의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.0
 		* HPCD_MULTI_OPERATOR_VERSION
 			* hypercloud-multi-operator의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.1
 		* HPCD_API_SERVER_VERSION
 			* hypercloud-api-server의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.1
 		* HPCD_POSTGRES_VERSION
 			* postgres의 버전
 			* ex) 5.0.0.1
 		* HPCD_MULTI_AGENT_VERSION
 			* hypercloud-multi-agent의 버전
-			* ex) 5.0.10.0
+			* ex) 5.0.17.3
 		* REGISTRY
 			* 폐쇄망 사용시 image repository의 주소
 			* 폐쇄망 아닐시 {REGISTRY} 그대로 유지
