@@ -7,11 +7,11 @@ rules:
 
   # Don't log system requests.
   - level: None
-    userGroups: ["system:serviceaccounts:hypercloud4-system", "system:nodes", "system:serviceaccounts", "system:masters"]
+    userGroups: ["system:serviceaccounts:hypercloud5-system", "system:nodes", "system:serviceaccounts", "system:masters"]
     
   # Don't log requests by hypercloud4-admin and kube-system user.
   - level: None
-    users: ["system:serviceaccount:hypercloud4-system:hypercloud4-admin", "system:kube-controller-manager", "system:kube-scheduler", "system:apiserver"]
+    users: ["system:serviceaccount:hypercloud5-system:hypercloud5-admin", "system:kube-controller-manager", "system:kube-scheduler", "system:apiserver"]
     
   # Don't log watch and get request
   - level: None
