@@ -210,9 +210,9 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - app.kubernetes.io/name=ingress-nginx-system
+          - app.kubernetes.io/component=controller
           versionLabel:
-          - app.kubernetes.io/name=ingress-nginx-system
+          - app.kubernetes.io/component=controller
       readinessProbe:
 
       versionProbe:
