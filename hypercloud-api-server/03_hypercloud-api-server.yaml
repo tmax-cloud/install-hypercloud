@@ -51,13 +51,12 @@ spec:
               value: "fluent/fluent-bit:1.5-debug"
             - name: KAFKA_GROUP_ID
               value: "hypercloud-api-server"
-              
-           # - name : kafka1_addr
-           #   value: {KAFKA1_ADDR}
-           # - name : kafka2_addr
-           #   value: {KAFKA2_ADDR}
-           # - name : kafka3_addr
-           #   value: {KAFKA3_ADDR}
+            - name : kafka1_addr
+              value: {KAFKA1_ADDR}
+            - name : kafka2_addr
+              value: {KAFKA2_ADDR}
+            - name : kafka3_addr
+              value: {KAFKA3_ADDR}
           ports:
           - containerPort: 443
             name: https 
@@ -72,8 +71,8 @@ spec:
           - name: version-config
             mountPath: /go/src/version/version.config
             subPath: version.config
-          # - name: kafka
-          #   mountPath: /go/src/etc/ssl
+          - name: kafka
+            mountPath: /go/src/etc/ssl
           - name: hypercloud5-api-server-certs
             mountPath: /run/secrets/tls
             readOnly: true
@@ -104,9 +103,9 @@ spec:
             path: username
           - key: SMTP_PASSWORD
             path: password
-      # - name: kafka
-      #   secret:
-      #     secretName: hypercloud-kafka-secret
+      - name: kafka
+        secret:
+          secretName: hypercloud-kafka-secret
       - name: token-secret
         secret:
           secretName: token-secret
