@@ -36,7 +36,11 @@ webhooks:
       - operations: ["CREATE"]
         apiGroups: ["cicdapi.tmax.io"]
         apiVersions: ["v1"]
-        resources: ["*"]           
+        resources: ["*"]     
+      - operations: ["CREATE"]
+        apiGroups: ["console.tmax.io"]
+        apiVersions: ["*"]
+        resources: ["*"]          
 # k8s      
       - operations: ["CREATE"]
         apiGroups: [""]
@@ -120,12 +124,7 @@ webhooks:
       - operations: ["CREATE"]
         apiGroups: ["triggers.tekton.dev"]
         apiVersions: ["*"]
-        resources: ["*"]    
-## console        
-      - operations: ["CREATE"]
-        apiGroups: ["console.tmax.io"]
-        apiVersions: ["*"]
-        resources: ["*"]     
+        resources: ["*"]       
 ## etc
       - operations: ["CREATE"]
         apiGroups: ["hypercloud.tmaxcloud.com"]
