@@ -57,7 +57,7 @@ webhooks:
       - operations: ["CREATE"]
         apiGroups: ["apps"]
         apiVersions: ["v1"]
-        resources: ["controllerrevisions", "daemonsets", "deployments", "statefulsets"]
+        resources: ["*"]
       - operations: ["CREATE"]
         apiGroups: ["batch"]
         apiVersions: ["*"]
