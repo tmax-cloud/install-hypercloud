@@ -50,7 +50,7 @@ spec:
             - name: SIDECAR_IMAGE
               value: "fluent/fluent-bit:1.5-debug"
             - name: KAFKA_GROUP_ID
-              value: "hypercloud-api-server"              
+              value: {KAFKA_GROUP_ID}
             - name : kafka1_addr
               value: {KAFKA1_ADDR}
             - name : kafka2_addr
