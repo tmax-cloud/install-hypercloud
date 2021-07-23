@@ -39,14 +39,15 @@
 * 필수 모듈  
   * [RookCeph](https://github.com/tmax-cloud/hypersds-wiki/)
   * [HyperAuth](https://github.com/tmax-cloud/install-hyperauth)
-  * CertManager
+  * [CertManager](https://github.com/tmax-cloud/install-cert-manager-temp/tree/5.0)
 
 * hypercloud-multi-operator 설치시 필요 모듈  
-  * [TemplateServiceBroker](https://github.com/tmax-cloud/install-tsb/tree/tsb-5.0)  
+  * [Ingress](https://github.com/tmax-cloud/install-ingress/tree/5.0)
+  * [TemplateServiceBroker](https://github.com/tmax-cloud/install-tsb/tree/tsb-5.0)
   * [CatalogController](https://github.com/tmax-cloud/install-catalog/tree/5.0)
   * [CAPI](https://github.com/tmax-cloud/install-CAPI/tree/5.0)
-  * Federation
-
+  * [Federation](https://github.com/tmax-cloud/install-federation/tree/5.0)
+  
 * hyperauth 사전 작업 (Hypercloud 사용자에 default 그룹 추가)
   * Hypercloud를 서비스할 realm 선택
   * hypercloud5 그룹 생성 (hypercloud5 동일하게 그룹을 생성해야 함)
@@ -163,6 +164,12 @@
 		* MASTER_NODE_ROOT_PASSWORD
 			* 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
 			* ex ) ("passwd111" "passwd222")
+
+		`multi operator 모드일시 아래 정보를 작성`
+		* HYPERAUTH_URL
+			* Hyperauth의 url을 입력
+			* protocol(http or https), 구분자(://) 및 url-path를 제외하고 host만 입력
+			* ex) https://hyperauth.org/example/path -> hyperauth.org 만 입력
 
 	
 

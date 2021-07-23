@@ -32,16 +32,6 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
 
-#Install hypercloud-multi-server
-if [ $HPCD_MODE == "multi" ]; then
-  pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
-  if [ $REGISTRY != "{REGISTRY}" ]; then
-    sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-  fi
-    kubectl apply -f  hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-  popd
-fi
 
 # Install hypercloud-api-server
 # step 1  - create pki and secret
@@ -178,3 +168,40 @@ for (( i=0; i<8; i++ )); do
   done
 done
 
+#Install hypercloud-multi-server
+if [ $HPCD_MODE == "multi" ]; then
+# step 0 - check ingress controller
+  INGRESS_IPADDR=$(kubectl get svc ingress-nginx-shared-controller -n ingress-nginx-shared -o jsonpath='{.status.loadBalancer.ingress[0:].ip}')
+  if [ $INGRESS_IPADDR == "" ]; then
+    echo "ERROR: ingress-controller should be installed"
+    exit 0
+  fi
+  pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
+
+# step 1 - put oidc, audit configuration to cluster-template yaml file
+# oidc configuration
+  sed -i 's/${HYPERAUTH_URL}/'${HYPERAUTH_URL}'/g' ./service-catalog-template-CAPI-*.yaml
+# audit configuration
+  awk '{print "          " $0}' /etc/kubernetes/pki/aws-en.cer > ./aws-en.cer
+  sudo sed -i -e '/${HYPERAUTH_CERT}/r ./aws-en.cer' -e '/${HYPERAUTH_CERT}/d' ./service-catalog-template-CAPI-*.yaml
+  awk '{print "          " $0}' /etc/kubernetes/pki/audit-webhook-config > ./audit-webhook-config
+  sudo sed -i -e '/${AUDIT_WEBHOOK_CONFIG}/r ./audit-webhook-config' -e '/${AUDIT_WEBHOOK_CONFIG}/d' ./service-catalog-template-CAPI-*.yaml
+  awk '{print "          " $0}' /etc/kubernetes/pki/audit-policy.yaml > ./audit-policy.yaml
+  sudo sed -i -e '/${AUDIT_POLICY}/r ./audit-policy.yaml' -e '/${AUDIT_POLICY}/d' ./service-catalog-template-CAPI-*.yaml
+  rm -rf ./aws-en.cer \
+         ./audit-webhook-config \
+         ./audit-policy.yaml
+  sed -i 's/hypercloud5-system.svc\/audit/'${INGRESS_IPADDR}'.nip.io\/audit\/${Namespace}\/${clusterName}/g' ./service-catalog-template-CAPI-*.yaml
+
+# step 2 - install hypercloud multi operator
+  if [ $REGISTRY != "{REGISTRY}" ]; then
+    sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  fi
+    kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+
+  for capi_provider_template in $(ls service-catalog-template-CAPI-*.yaml)
+  do
+      echo ${capi_provider_template}
+  done
+fi
