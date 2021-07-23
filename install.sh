@@ -202,6 +202,6 @@ if [ $HPCD_MODE == "multi" ]; then
 
   for capi_provider_template in $(ls service-catalog-template-CAPI-*.yaml)
   do
-      echo ${capi_provider_template}
+      kubectl apply -f ${capi_provider_template}
   done
 fi
