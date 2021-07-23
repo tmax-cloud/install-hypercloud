@@ -182,15 +182,14 @@ if [ $HPCD_MODE == "multi" ]; then
 # oidc configuration
   sed -i 's/${HYPERAUTH_URL}/'${HYPERAUTH_URL}'/g' ./service-catalog-template-CAPI-*.yaml
 # audit configuration
-  awk '{print "          " $0}' /etc/kubernetes/pki/aws-en.cer > ./aws-en.cer
-  sudo sed -i -e '/${HYPERAUTH_CERT}/r ./aws-en.cer' -e '/${HYPERAUTH_CERT}/d' ./service-catalog-template-CAPI-*.yaml
-  awk '{print "          " $0}' /etc/kubernetes/pki/audit-webhook-config > ./audit-webhook-config
-  sudo sed -i -e '/${AUDIT_WEBHOOK_CONFIG}/r ./audit-webhook-config' -e '/${AUDIT_WEBHOOK_CONFIG}/d' ./service-catalog-template-CAPI-*.yaml
-  awk '{print "          " $0}' /etc/kubernetes/pki/audit-policy.yaml > ./audit-policy.yaml
-  sudo sed -i -e '/${AUDIT_POLICY}/r ./audit-policy.yaml' -e '/${AUDIT_POLICY}/d' ./service-catalog-template-CAPI-*.yaml
-  rm -rf ./aws-en.cer \
-         ./audit-webhook-config \
-         ./audit-policy.yaml
+  FILE=("aws-en.cer" "audit-webhook-config" "audit-policy.yaml")
+  PARAM=("\${HYPERAUTH_CERT}" "\${AUDIT_WEBHOOK_CONFIG}" "\${AUDIT_POLICY}")
+  for i in ${!FILE[*]}
+  do
+    awk '{print "          " $0}' /etc/kubernetes/pki/${FILE[$i]} > ./${FILE[$i]}
+    sudo sed -i -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' ./service-catalog-template-CAPI-*.yaml
+    rm -f ./${FILE[$i]}
+  done
   sed -i 's/hypercloud5-system.svc\/audit/'${INGRESS_IPADDR}'.nip.io\/audit\/${Namespace}\/${clusterName}/g' ./service-catalog-template-CAPI-*.yaml
 
 # step 2 - install hypercloud multi operator
