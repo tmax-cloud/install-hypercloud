@@ -102,8 +102,8 @@ popd
 fi
 
 if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
-  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/html/invite.html
-  kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/invite.html -n hypercloud5-system
+  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html
+  kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html -n hypercloud5-system
 fi
 
 if [ -z "$(kubectl get secret -n hypercloud5-system | grep hypercloud-kafka-secret | awk '{print $1}')"]; then
