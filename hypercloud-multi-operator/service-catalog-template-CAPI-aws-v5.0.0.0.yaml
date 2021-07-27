@@ -59,7 +59,7 @@ objects:
             audit-policy-file: /etc/kubernetes/pki/audit-policy.yaml
             audit-webhook-config-file: /etc/kubernetes/pki/audit-webhook-config
             cloud-provider: aws
-            oidc-issuer-url: https://${HYPERAUTH_URL}/auth/realms/tmax
+            oidc-issuer-url: ${HYPERAUTH_URL}
             oidc-client-id: hypercloud5
             oidc-username-claim: preferred_username
             oidc-username-prefix: '-'

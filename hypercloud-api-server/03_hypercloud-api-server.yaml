@@ -24,7 +24,7 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   rules:
-  - host: {HYPERCLOUD_API_SERVER_INGRESS_URL} 
+  - host: hypercloud5-api-server-service.{INGRESS_IPADDR}.nip.io
     http:
       paths:
       - path: /audit(/|$)(.*)

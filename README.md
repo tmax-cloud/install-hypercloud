@@ -165,11 +165,6 @@
 			* 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
 			* ex ) ("passwd111" "passwd222")
 
-		`multi operator 모드일시 아래 정보를 작성`
-		* HYPERAUTH_URL
-			* Hyperauth의 url을 입력
-			* protocol(http or https), 구분자(://) 및 url-path를 제외하고 host만 입력
-			* ex) https://hyperauth.org/example/path -> hyperauth.org 만 입력
 
 	
 
