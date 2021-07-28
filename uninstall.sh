@@ -71,13 +71,18 @@ sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-policy-fi
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )' -i kube-apiserver.yaml
 sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
+sleep 30s
+
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo rm /etc/kubernetes/pki/audit-policy.yaml
   sudo rm /etc/kubernetes/pki/audit-webhook-config
   kubectl delete -f webhook-configuration.yaml
 popd
 
-sleep 30s
+pushd $HYPERCLOUD_API_SERVER_HOME/pki
+  sudo rm hypercloud-api-server.crt
+  sudo rm hypercloud-api-server.key
+popd
 
 #  step 6 - delete audit configuration of all k8s-apiserver master nodes
 for master in "${SUB_MASTER_IP[@]}"
