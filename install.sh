@@ -7,9 +7,9 @@ HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
+INGRESS_DNSURL="hypercloud5-api-server-service.hypercloud5-system.svc/audit"
 INGRESS_IPADDR=$(kubectl get svc ingress-nginx-shared-controller -n ingress-nginx-shared -o jsonpath='{.status.loadBalancer.ingress[0:].ip}')
-KA_YAML=`sudo yq e '.spec.containers[0].command' ./kube-apiserver.yaml`
-HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
+INGRESS_SVCURL="hypercloud5-api-server-service."${INGRESS_IPADDR}".nip.io"
 set -xe
 
 
@@ -92,7 +92,7 @@ sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCL
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_GROUP_ID}/'hypercloud-api-server-$HOSTNAME-$(($RANDOM%100))'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's/{INGRESS_IPADDR}/'${INGRESS_IPADDR}'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's/{INGRESS_SVCURL}/'${INGRESS_SVCURL}'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
@@ -121,7 +121,9 @@ sudo yq e 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
 sudo yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
 
 # get hyperauth URL from --oidc-issuer-url and sed to version.config
-sudo sed -i 's@{HYPERAUTH_URL}@'${HYPERAUTH_URL}'@g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
+KA_YAML=`sudo yq e '.spec.containers[0].command' ./kube-apiserver.yaml`
+HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
+sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
 #  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
@@ -172,32 +174,32 @@ done
 
 #Install hypercloud-multi-server
 if [ $HPCD_MODE == "multi" ]; then
-# step 0 - check ingress controller
-  pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
+pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
 
 # step 1 - put oidc, audit configuration to cluster-template yaml file
 # oidc configuration
-  sed -i 's/${HYPERAUTH_URL}/'${HYPERAUTH_URL}'/g' ./service-catalog-template-CAPI-*.yaml
+  sed -i 's#${HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g' ./service-catalog-template-CAPI-*.yaml
 # audit configuration
   FILE=("aws-en.cer" "audit-webhook-config" "audit-policy.yaml")
   PARAM=("\${HYPERAUTH_CERT}" "\${AUDIT_WEBHOOK_CONFIG}" "\${AUDIT_POLICY}")
   for i in ${!FILE[*]}
   do
-    awk '{print "          " $0}' /etc/kubernetes/pki/${FILE[$i]} > ./${FILE[$i]}
-    sudo sed -i -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' ./service-catalog-template-CAPI-*.yaml
+    sudo awk '{print "          " $0}' /etc/kubernetes/pki/${FILE[$i]} > ./${FILE[$i]}
+    sudo sed -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' -i ./service-catalog-template-CAPI-*.yaml
     rm -f ./${FILE[$i]}
   done
-  sed -i 's/hypercloud5-system.svc\/audit/'${INGRESS_IPADDR}'.nip.io\/audit\/${Namespace}\/${clusterName}/g' ./service-catalog-template-CAPI-*.yaml
+  sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./service-catalog-template-CAPI-*.yaml
 
 # step 2 - install hypercloud multi operator
   if [ $REGISTRY != "{REGISTRY}" ]; then
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
-    kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
   for capi_provider_template in $(ls service-catalog-template-CAPI-*.yaml)
   do
       kubectl apply -f ${capi_provider_template}
   done
+popd
 fi
