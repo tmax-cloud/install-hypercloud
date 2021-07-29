@@ -8,6 +8,8 @@ HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
+KA_YAML=`sudo yq e '.spec.containers[0].command' /etc/kubernetes/manifests/kube-apiserver.yaml`
+HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
 set -xe
 
 
@@ -136,6 +138,7 @@ sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCL
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_GROUP_ID}/'hypercloud-api-server-$HOSTNAME-$(($RANDOM%100))'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's@{HYPERAUTH_URL}@'${HYPERAUTH_URL}'@g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
@@ -162,11 +165,6 @@ sudo yq e '.spec.containers[0].command += "--audit-policy-file=/etc/kubernetes/p
 sudo yq e '.spec.containers[0].command += "--audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config"' -i ./kube-apiserver.yaml
 sudo yq e 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
 sudo yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
-
-# get hyperauth URL from --oidc-issuer-url and sed to version.config
-KA_YAML=`sudo yq e '.spec.containers[0].command' ./kube-apiserver.yaml`
-HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
-sudo sed -i 's@{HYPERAUTH_URL}@'${HYPERAUTH_URL}'@g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
 #  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
