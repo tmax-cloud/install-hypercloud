@@ -144,8 +144,12 @@ webhooks:
         resources: ["*"]   
       - operations: ["CREATE","UPDATE"]
         apiGroups: ["types.kubefed.io"]
-        apiVersions: ["v1"]
-        resources: ["*"]        
+        apiVersions: ["*"]
+        resources: ["*"]
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: ["awx.ansible.com"]
+        apiVersions: ["*"]
+        resources: ["*"]   
     matchPolicy: Equivalent
     sideEffects: None
     admissionReviewVersions: ["v1beta1"]
