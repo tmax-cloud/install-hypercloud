@@ -186,7 +186,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     sudo sed -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' -i ./service-catalog-template-CAPI-*.yaml
     rm -f ./${FILE[$i]}
   done
-  sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./service-catalog-template-CAPI-*.yaml
+  #sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./service-catalog-template-CAPI-*.yaml
 
 # step 2 - install hypercloud multi operator
   if [ $REGISTRY != "{REGISTRY}" ]; then
