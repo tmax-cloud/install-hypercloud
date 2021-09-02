@@ -174,17 +174,17 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
 
 # step 1 - put oidc, audit configuration to cluster-template yaml file
 # oidc configuration
-  sed -i 's#${HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g' ./service-catalog-template-CAPI-*.yaml
+  sed -i 's#${HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g' ./capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 # audit configuration
   FILE=("aws-en.cer" "audit-webhook-config" "audit-policy.yaml")
   PARAM=("\${HYPERAUTH_CERT}" "\${AUDIT_WEBHOOK_CONFIG}" "\${AUDIT_POLICY}")
   for i in ${!FILE[*]}
   do
     sudo awk '{print "          " $0}' /etc/kubernetes/pki/${FILE[$i]} > ./${FILE[$i]}
-    sudo sed -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' -i ./service-catalog-template-CAPI-*.yaml
+    sudo sed -e '/'${PARAM[$i]}'/r ./'${FILE[$i]}'' -e '/'${PARAM[$i]}'/d' -i ./capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
     rm -f ./${FILE[$i]}
   done
-  sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./service-catalog-template-CAPI-*.yaml
+  sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
 # step 2 - install hypercloud multi operator
   if [ $REGISTRY != "{REGISTRY}" ]; then
@@ -193,7 +193,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   fi
   kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
-  for capi_provider_template in $(ls service-catalog-template-CAPI-*.yaml)
+  for capi_provider_template in $(ls capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml)
   do
       kubectl apply -f ${capi_provider_template}
   done
