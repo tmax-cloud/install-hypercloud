@@ -40,12 +40,27 @@ popd
 # step 2 - delete hypercloud-multi-operator
 pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   timeout 5m kubectl delete -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  for provider in "aws" "vsphere"
+  do
+    timeout 5m kubectl delete -f capi-${provider}-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  done
   suc=`echo $?`
   if [ $suc != 0 ]; then
     echo "Failed to delete hypercloud-multi-operator"
   fi
 popd
 
+# step 2.5 - delete hypercloud-multi-agent
+pushd $HYPERCLOUD_MULTI_AGENT_HOME
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/00_enable-federate-resource.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/01_federate-namespace.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/02_federate-clusterRoleBinding.yaml
+  timeout 5m kubectl delete -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  suc=`echo $?`
+  if [ $suc != 0 ]; then
+    echo "Failed to delete hypercloud-multi-agent"
+  fi
+popd
 
 # step 3 - delete hypercloud-single-operator
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME

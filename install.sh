@@ -4,6 +4,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
+HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
@@ -13,7 +14,6 @@ INGRESS_SVCURL="hypercloud5-api-server-service."${INGRESS_IPADDR}".nip.io"
 KA_YAML=`sudo yq e '.spec.containers[0].command' /etc/kubernetes/manifests/kube-apiserver.yaml`
 HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
 set -xe
-
 
 # Check if certmanager exists
 if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
@@ -36,7 +36,6 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
   fi
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
 popd
-
 
 # Install hypercloud-api-server
 # step 1  - create pki and secret
@@ -94,7 +93,7 @@ sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCL
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_GROUP_ID}/'hypercloud-api-server-$HOSTNAME-$(($RANDOM%100))'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's/{INGRESS_SVCURL}/'${INGRESS_SVCURL}'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's#{INGRESS_SVCURL}#'${INGRESS_SVCURL}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 
 # step 3  - apply manifests
@@ -134,7 +133,6 @@ do
   if [ $master == "$MAIN_MASTER_IP" ]; then
     continue
   fi
-
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-policy.yaml ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-policy.yaml
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp audit-webhook-config ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/audit-webhook-config
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" scp hypercloud-root-ca.crt ${MASTER_NODE_ROOT_USER[i]}@"$master":/etc/kubernetes/pki/hypercloud-root-ca.crt
@@ -199,5 +197,20 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   do
       kubectl apply -f ${capi_provider_template}
   done
+popd
+
+pushd $HYPERCLOUD_MULTI_AGENT_HOME
+  sudo sed -i 's/{HPCD_MULTI_AGENT_VERSION}/b'${HPCD_MULTI_AGENT_VERSION}'/g'  ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  if [ $REGISTRY != "{REGISTRY}" ]; then
+    sudo sed -i 's#tmaxcloudck/hypercloud-multi-agent#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-agent#g' ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  fi
+  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/00_enable-federate-resource.yaml
+  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/01_federate-namespace.yaml
+  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/02_federate-clusterRoleBinding.yaml
+  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+  kubefedctl enable namespace --federated-group types.kubefed.io
+  kubefedctl enable deployment --federated-group types.kubefed.io
+  kubefedctl enable service --federated-group types.kubefed.io
+  kubefedctl enable clusterrolebinding --federated-group types.kubefed.io
 popd
 fi

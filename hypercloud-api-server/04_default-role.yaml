@@ -157,4 +157,3 @@ rules:
   - apiGroups: ['']
     resources: ['namespaces/status']
     verbs: ['get']
-
