@@ -149,7 +149,7 @@ webhooks:
       - operations: ["CREATE","UPDATE"]
         apiGroups: ["awx.ansible.com"]
         apiVersions: ["*"]
-        resources: ["*"]           
+        resources: ["*"]
     matchPolicy: Equivalent
     sideEffects: None
     admissionReviewVersions: ["v1beta1"]
@@ -307,5 +307,3 @@ webhooks:
     admissionReviewVersions: ["v1beta1"]
     timeoutSeconds: 10
     failurePolicy: Fail
-    
-    
