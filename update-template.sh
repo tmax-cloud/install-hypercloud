@@ -25,11 +25,9 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   #sed -i 's#'${INGRESS_DNSURL}'#'${INGRESS_SVCURL}'\/audit\/${Namespace}\/${clusterName}#g' ./capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
 # step 2 - replace template file
-  if [ $REGISTRY != "{REGISTRY}" ]; then
-    sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-    sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-  fi
-  kubectl replace -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  #if [ $REGISTRY != "{REGISTRY}" ]; then
+  #  sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  #fi
 
   for capi_provider_template in "$(ls capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml)"
   do
