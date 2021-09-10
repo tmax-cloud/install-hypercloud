@@ -1,6 +1,9 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $SCRIPTDIR/hypercloud.config
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
+INGRESS_DNSURL="hypercloud5-api-server-service.hypercloud5-system.svc/audit"
+INGRESS_IPADDR=$(kubectl get svc ingress-nginx-shared-controller -n ingress-nginx-shared -o jsonpath='{.status.loadBalancer.ingress[0:].ip}')
+INGRESS_SVCURL="hypercloud5-api-server-service."${INGRESS_IPADDR}".nip.io"
 CSB_NAME="$(kubectl get clusterservicebroker -o jsonpath='{.items[0].metadata.name}')"
 CSB_URL="$(kubectl get clusterservicebroker -o jsonpath='{.items[0].spec.url}')"
 # Update capi-template
@@ -25,11 +28,11 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
-  kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  kubectl replace -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
   for capi_provider_template in "$(ls capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml)"
   do
-      kubectl apply -f ${capi_provider_template}
+      kubectl replace -f ${capi_provider_template}
   done
 
 # step 3 - restart cluster service broker
