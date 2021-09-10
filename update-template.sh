@@ -10,7 +10,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
 # oidc configuration
   sed -i 's#${HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g' ./capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 # audit configuration
-  FILE=("aws-en.cer" "audit-webhook-config" "audit-policy.yaml")
+  FILE=("hyperauth.crt" "audit-webhook-config" "audit-policy.yaml")
   PARAM=("\${HYPERAUTH_CERT}" "\${AUDIT_WEBHOOK_CONFIG}" "\${AUDIT_POLICY}")
   for i in ${!FILE[*]}
   do
