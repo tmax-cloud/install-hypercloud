@@ -274,35 +274,3 @@ HyperAuth
   kubectl describe namespaceclaim example-namespace-webhook
   ```
 
-## 인증서 재발급 가이드
-
-## Step 1. hypercloud-webhook-certs, jks 재발급
-* 목적: `k8s 인증서 갱신에 따른 hypercloud-webhook 인증서 재발급`
-* 주의: 갱신된 ca.crt와 ca.key 파일을 hypercloud-webhook/pki 폴더로 복사하고, 이외의 파일은 삭제한다.
-* 실행: 00_gen-certs.sh 실행
-  ```bash
-  ./00_gen-certs.sh
-  ```
-
-## Step 2. Secret 재생성
-* 목적: `갱신된 jks로 secret 최신화`
-* 실행:
-  ```bash
-  kubectl -n hypercloud4-system delete secret hypercloud4-webhook-certs
-  kubectl -n hypercloud4-system create secret generic hypercloud4-webhook-certs --from-file=${HPCD_HOME}/manifest/hypercloud-webhook-${HPCD_WEBHOOK_VERSION}/pki/hypercloud4-webhook.jks
-  ```
-
-## Step 3. webhook configuration 재생성 및 적용
-* 목적: `갱신된 인증서로 webhook configuration 최신화`
-* 실행:
-  ```bash
-  ./02_gen-webhook-config.sh
-  kubectl apply -f 03_webhook-configuration.yaml
-  ```
-
-## Step 4. hypercloud-webhook pod 재기동
-* 목적: `갱신된 인증서를 반영하기 위한 pod 재기동`
-* 실행:
-  ```bash
-  kubectl delete pod {POD 이름} -n hypercloud4-system
-  ```
