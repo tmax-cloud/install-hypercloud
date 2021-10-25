@@ -193,7 +193,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   fi
   kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
 
-  for capi_provider_template in $(ls capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml)
+  for capi_provider_template in capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   do
       kubectl apply -f ${capi_provider_template}
   done

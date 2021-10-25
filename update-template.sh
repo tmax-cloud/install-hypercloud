@@ -30,7 +30,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   #  sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   #fi
 
-  for capi_provider_template in "$(ls capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml)"
+  for capi_provider_template in capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   do
       kubectl replace -f ${capi_provider_template}
   done
