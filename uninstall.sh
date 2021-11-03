@@ -10,31 +10,13 @@ set -x
 
 # step 1 - delete hypercloud-api-server and involved secret
 pushd $HYPERCLOUD_API_SERVER_HOME
-  timeout 5m kubectl delete -f 04_default-role.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete 04_default-role.yaml"
-  fi
-  timeout 5m kubectl delete -f 03_hypercloud-api-server.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete 03_hypercloud-api-server.yaml"
-  fi
-  timeout 5m kubectl delete -f 02_postgres-create.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete 02_postgres-create.yaml"
-  fi
-  timeout 5m kubectl delete -f 01_init.yaml
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete 01_init.yaml"
-  fi
-  timeout 5m kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
-  suc=`echo $?`
-  if [ $suc != 0 ]; then
-    echo "Failed to delete secret"
-  fi
+  kubectl delete -f 04_default-role.yaml
+  kubectl delete -f 03_hypercloud-api-server.yaml
+  kubectl delete -f 02_postgres-create.yaml
+  kubectl delete -f 01_init.yaml
+  kubectl delete -f kafka-secret.yaml
+  kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs
+  kubectl -n hypercloud5-system delete secret hypercloud-kafka-secret
 popd
 
 # step 2 - delete hypercloud-multi-operator
@@ -79,7 +61,7 @@ fi
 
 # step 5 - delete audit configuration
 sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
-sudo yq eval 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
+#sudo yq eval 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )' -i kube-apiserver.yaml
@@ -106,7 +88,7 @@ do
   fi
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.dnsPolicy)'"'"' -i kube-apiserver.yaml'
+  #sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.dnsPolicy)'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )'"'"' -i kube-apiserver.yaml'

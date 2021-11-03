@@ -38,39 +38,16 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
 popd
 
 # Install hypercloud-api-server
-# step 1  - create pki and secret
-if [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt" ] || [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key" ]; then
-pushd $HYPERCLOUD_API_SERVER_HOME/pki
-  sudo chmod +x *.sh
-  sudo touch ~/.rnd
-  sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
-  sudo chmod +777 hypercloud-api-server.*
-  if [ -z "$(kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
-    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
-  else
-    kubectl -n hypercloud5-system delete secret  hypercloud5-api-server-certs
-    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
-  fi
-popd
-fi
-
+# step 1  - create configmap and secret
 if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
   sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html
   kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html -n hypercloud5-system
 fi
 
 if [ -z "$(kubectl get secret -n hypercloud5-system | grep hypercloud-kafka-secret | awk '{print $1}')"]; then
-  sudo cp /etc/kubernetes/pki/hypercloud-root-ca.crt $HYPERCLOUD_API_SERVER_HOME/pki/
-  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt
-  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.*
-  kubectl -n hypercloud5-system create secret generic hypercloud-kafka-secret \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
+  pushd $HYPERCLOUD_API_SERVER_HOME
+    kubectl apply -f  kafka-secret.yaml
+  popd
 fi
 
 # step 2  - sed manifests
@@ -92,6 +69,7 @@ sudo sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_h
 sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's/{KAFKA_ENABLED}/'${KAFKA_ENABLED}'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_GROUP_ID}/'hypercloud-api-server-$HOSTNAME-$(($RANDOM%100))'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{INGRESS_SVCURL}#'${INGRESS_SVCURL}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
@@ -104,14 +82,11 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  04_default-role.yaml
 popd
 
-#  step 4 - create and apply config
+#  step 4 - create and apply webhook and audit config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo chmod +x *.sh 
   sudo ./gen-audit-config.sh
-  sudo ./gen-webhook-config.sh
   sudo cp audit-policy.yaml /etc/kubernetes/pki/
-  sudo cp audit-webhook-config /etc/kubernetes/pki/
-
   kubectl apply -f webhook-configuration.yaml
 popd
 #  step 5 - modify kubernetes api-server manifest
@@ -119,8 +94,8 @@ sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
 sudo yq e '.spec.containers[0].command += "--audit-webhook-mode=batch"' -i ./kube-apiserver.yaml
 sudo yq e '.spec.containers[0].command += "--audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml"' -i ./kube-apiserver.yaml
 sudo yq e '.spec.containers[0].command += "--audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config"' -i ./kube-apiserver.yaml
-sudo yq e 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
-sudo yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
+#sudo yq e 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
+#sudo yq e '.spec.dnsPolicy += "ClusterFirstWithHostNet"' -i kube-apiserver.yaml
 sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
 #  step 6 - copy audit config files to all k8s-apiserver and modify k8s apiserver manifest
@@ -141,7 +116,7 @@ do
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-webhook-mode=batch"'"'"' -i ./kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-policy-file=/etc/kubernetes/pki/audit-policy.yaml"'"'"' -i ./kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.containers[0].command += "--audit-webhook-config-file=/etc/kubernetes/pki/audit-webhook-config"'"'"' -i ./kube-apiserver.yaml'
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.dnsPolicy += "ClusterFirstWithHostNet"'"'"' -i ./kube-apiserver.yaml'
+  #sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq e '"'"'.spec.dnsPolicy += "ClusterFirstWithHostNet"'"'"' -i ./kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" sudo mv -f ./kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 
   i=$((i+1))
