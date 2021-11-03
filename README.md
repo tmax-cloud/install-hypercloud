@@ -199,7 +199,7 @@
 		  - "hypercloud.tmaxcloud.org"
 		  - "hypercloud5-api-server-service.hypercloud5-system.svc"
 		  issuerRef:
-			kind: ClusterIssuer
+		    kind: ClusterIssuer
 		    group: cert-manager.io
 		    name: tmaxcloud-issuer # 해당 환경의 issuer	
 		```
