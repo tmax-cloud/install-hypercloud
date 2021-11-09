@@ -15,14 +15,6 @@ KA_YAML=`sudo yq e '.spec.containers[0].command' /etc/kubernetes/manifests/kube-
 HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' -f1`
 set -xe
 
-# Check if certmanager exists
-if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
-  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-cainjector
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
-fi
-
 # Check if namespace exists
 if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
    kubectl create ns hypercloud5-system
