@@ -79,7 +79,7 @@ fi
 
 # step 5 - delete audit configuration
 sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
-sudo yq eval 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
+#sudo yq eval 'del(.spec.dnsPolicy)' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )' -i kube-apiserver.yaml
 sudo yq eval 'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )' -i kube-apiserver.yaml
@@ -106,7 +106,7 @@ do
   fi
 
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" sudo cp /etc/kubernetes/manifests/kube-apiserver.yaml .
-  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.dnsPolicy)'"'"' -i kube-apiserver.yaml'
+#  sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.dnsPolicy)'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-mode*") )'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-policy-file*") )'"'"' -i kube-apiserver.yaml'
   sudo sshpass -p "${MASTER_NODE_ROOT_PASSWORD[i]}" ssh -o StrictHostKeyChecking=no ${MASTER_NODE_ROOT_USER[i]}@"$master" 'sudo yq eval '"'"'del(.spec.containers[0].command[] | select(. == "--audit-webhook-config-file*") )'"'"' -i kube-apiserver.yaml'
