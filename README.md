@@ -154,6 +154,9 @@
 		- INVITATION_TOKEN_EXPIRED_DATE
 			- 클러스터에 사용자 초대 시 초대 만료 시간
 			- ex) 7days, 1hours, 1minutes
+		- KAFKA_ENABLED
+			- KAFKA 사용 여부
+			- ex) true, false
 		- KAFKAX_ADDR
 			- kafka의 IP 주소
 			- KAFKA1_ADDR, KAFKA2_ADDR, KAFKA3_ADDR 모두 변경해야 적용 됨
