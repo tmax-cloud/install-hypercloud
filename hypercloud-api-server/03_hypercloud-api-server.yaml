@@ -66,7 +66,7 @@ spec:
             - name: HC_MODE
               value: {HPCD_MODE} # multi / single 
             - name: INVITATION_TOKEN_EXPIRED_DATE
-              value: {INVITATION_TOKEN_EXPIRED_DATE} # multi / single 
+              value: {INVITATION_TOKEN_EXPIRED_DATE} # 7days, 1hours, 1minutes
             - name: GODEBUG
               value: "x509ignoreCN=0"  
             - name: SIDECAR_IMAGE
@@ -75,12 +75,6 @@ spec:
               value: "{KAFKA_ENABLED}"
             - name: KAFKA_GROUP_ID
               value: {KAFKA_GROUP_ID}
-            - name : kafka1_addr
-              value: {KAFKA1_ADDR}
-            - name : kafka2_addr
-              value: {KAFKA2_ADDR}
-            - name : kafka3_addr
-              value: {KAFKA3_ADDR}
           ports:
           - containerPort: 443
             name: https 

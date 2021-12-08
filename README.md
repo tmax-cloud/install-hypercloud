@@ -127,7 +127,7 @@
 - 순서: 
 	- 환경에 맞는 config 내용 작성
 		- HPCD_MODE
-			- single만 설치할지, single/multi 전부 설치할지 선택하는 항목
+			- single 단일 혹은 single/multi 전부 설치 여부
 			- ex) single / multi
 		- HPCD_SINGLE_OPERATOR_VERSION
 			- hypercloud-single-operator의 버전
@@ -156,12 +156,7 @@
 			- ex) 7days, 1hours, 1minutes
 		- KAFKA_ENABLED
 			- KAFKA 사용 여부
-			- ex) true, false
-		- KAFKAX_ADDR
-			- kafka의 IP 주소
-			- KAFKA1_ADDR, KAFKA2_ADDR, KAFKA3_ADDR 모두 변경해야 적용 됨
-			- DNS를 이용해 같은 클러스터 내에 있는 kafak 사용시 {DNS} 그대로 유지
-			- ex) 172.22.6.2:31000
+			- ex) "true", "false"
 
 		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
 		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
@@ -180,7 +175,44 @@
 
 ## Step 1. installer 실행
 - 목적 : `설치를 위한 shell script 실행`
-- 순서: 
+- 비고 : __kafka가 외부 클러스터에 있다면__ shell script 실행 전 해당 클러스터에서 ca 인증서와 키를 발급 받은 뒤, hypercloud-api-server를 설치하는 클러스터에 hypercloud-kafka-secret을 생성해야 한다.
+	1. kafka가 실행되고 있는 클러스터에서 아래 형식을 통해 인증서 발급 받음.  
+		```yaml
+		apiVersion: cert-manager.io/v1
+		kind: Certificate
+		metadata:
+		  name: hypercloud5-api-server-kafka-cert
+		spec:
+		  secretName: hypercloud-kafka-secret
+		  isCA: false
+		  usages:
+		  - digital signature
+		  - key encipherment
+		  - server auth
+		  - client auth
+		  dnsNames:
+		  - "hypercloud.tmaxcloud.org"
+		  - "hypercloud5-api-server-service.hypercloud5-system.svc"
+		  issuerRef:
+		    kind: ClusterIssuer
+		    group: cert-manager.io
+		    name: tmaxcloud-issuer # 해당 환경의 issuer	
+		```
+	2. 생성된 secret에서 인증서 추출
+		```bash
+		$ kubectl get secret hypercloud-kafka-secret -o jsonpath="{['data']['ca\.crt']}" | base64 -d > ca.crt
+		$ kubectl get secret hypercloud-kafka-secret -o jsonpath="{['data']['tls\.crt']}" | base64 -d > tls.crt
+		$ kubectl get secret hypercloud-kafka-secret -o jsonpath="{['data']['tls\.key']}" | base64 -d > tls.key
+		```
+	3. 추출한 파일을 이용해 hypercloud-api-server가 설치될 클러스터에 secret 생성
+		```bash
+		$ kubectl -n hypercloud5-system create secret generic hypercloud-kafka-secret \
+	  		--from-file=ca.crt \
+  			--from-file=tls.crt \
+  			--from-file=tls.key
+		```
+
+- 순서 : 
 	- 권한 부여 및 실행
 		``` bash
 		$ sudo chmod +x install.sh
@@ -189,7 +221,7 @@
 
 ## 삭제 가이드
 - 목적 : `삭제를 위한 shell script 실행`
-- 순서: 
+- 순서 : 
 	- 권한 부여 및 실행
 		``` bash
 		$ sudo chmod +x uninstall.sh
@@ -198,7 +230,7 @@
 
 ## multi-operator capi-template version update 가이드
 - 목적 : `multi-operator capi-template version update를 위한 shell script실행`
-- 순서:
+- 순서 :
 	- 권한 부여 및 실행
 		``` bash
 		$ sudo chmod +x update-template.sh

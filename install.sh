@@ -16,12 +16,12 @@ HYPERAUTH_URL=`echo "${KA_YAML#*--oidc-issuer-url=}" | tr -d '\12' | cut -d '-' 
 set -xe
 
 # Check if certmanager exists
-if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
-  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-cainjector
-  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
-fi
+#if [ -z "$(kubectl get ns | grep cert-manager | awk '{print $1}')" ]; then
+#  kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+#  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager
+#  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-cainjector
+#  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
+#fi
 
 # Check if namespace exists
 if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
@@ -38,54 +38,22 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
 popd
 
 # Install hypercloud-api-server
-# step 1  - create pki and secret
-if [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt" ] || [ ! -f "$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key" ]; then
-pushd $HYPERCLOUD_API_SERVER_HOME/pki
-  sudo chmod +x *.sh
-  sudo touch ~/.rnd
-  sudo ./generateTls.sh -name=hypercloud-api-server -dns=hypercloud5-api-server-service.hypercloud5-system.svc -dns=hypercloud5-api-server-service.hypercloud5-system.svc.cluster.local
-  sudo chmod +777 hypercloud-api-server.*
-  if [ -z "$(kubectl get secret hypercloud5-api-server-certs -n hypercloud5-system | awk '{print $1}')" ]; then
-    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
-  else
-    kubectl -n hypercloud5-system delete secret  hypercloud5-api-server-certs
-    kubectl -n hypercloud5-system create secret generic hypercloud5-api-server-certs \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-    --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
-  fi
-popd
-fi
-
+# step 1  - create configmap and secret
 if [ -z "$(kubectl get cm -n hypercloud5-system | grep html-config | awk '{print $1}')" ]; then
   sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html
   kubectl create configmap html-config --from-file=$HYPERCLOUD_API_SERVER_HOME/html/cluster-invitation.html -n hypercloud5-system
 fi
 
 if [ -z "$(kubectl get secret -n hypercloud5-system | grep hypercloud-kafka-secret | awk '{print $1}')"]; then
-  sudo cp /etc/kubernetes/pki/hypercloud-root-ca.crt $HYPERCLOUD_API_SERVER_HOME/pki/
-  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt
-  sudo chmod +777 $HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.*
-  kubectl -n hypercloud5-system create secret generic hypercloud-kafka-secret \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-root-ca.crt \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.crt \
-  --from-file=$HYPERCLOUD_API_SERVER_HOME/pki/hypercloud-api-server.key
+  pushd $HYPERCLOUD_API_SERVER_HOME
+    kubectl apply -f  kafka-secret.yaml
+  popd
 fi
 
 # step 2  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
   sudo sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
   sudo sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
-fi
-if [ $KAFKA1_ADDR != "{KAFKA1_ADDR}" ] && [ $KAFKA2_ADDR != "{KAFKA2_ADDR}" ] && [ $KAFKA3_ADDR != "{KAFKA3_ADDR}" ]; then
-  sudo sed -i 's/{KAFKA1_ADDR}/'${KAFKA1_ADDR}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's/{KAFKA2_ADDR}/'${KAFKA2_ADDR}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's/{KAFKA3_ADDR}/'${KAFKA3_ADDR}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-else
-  sudo sed -i 's/{KAFKA1_ADDR}/'DNS'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's/{KAFKA2_ADDR}/'DNS'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's/{KAFKA3_ADDR}/'DNS'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 fi
 sudo sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
@@ -105,14 +73,12 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  04_default-role.yaml
 popd
 
-#  step 4 - create and apply config
+#  step 4 - create and apply webhook and audit config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo chmod +x *.sh 
   sudo ./gen-audit-config.sh
-  sudo ./gen-webhook-config.sh
   sudo cp audit-policy.yaml /etc/kubernetes/pki/
   sudo cp audit-webhook-config /etc/kubernetes/pki/
-
   kubectl apply -f webhook-configuration.yaml
 popd
 #  step 5 - modify kubernetes api-server manifest
