@@ -4,10 +4,10 @@
 
 ## 구성 요소 및 버전
 - hypercloud-api-server
-	- image: [tmaxcloudck/hypercloud-api-server:b5.0.26.3](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	- image: [tmaxcloudck/hypercloud-api-server:b5.0.26.6](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 - hypercloud-single-operator
-	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.25.15](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.25.15](https://hub.docker6com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	- git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 - hypercloud-multi-operator
 	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.25.14](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
@@ -72,8 +72,8 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_API_SERVER_VERSION=5.0.26.3
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.25.15
+	$ export HPCD_API_SERVER_VERSION=5.0.26.6
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.25.16
 	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.25.14
 	$ export HPCD_MULTI_AGENT_VERSION=5.0.25.14
 	$ export HPCD_POSTGRES_VERSION=5.0.0.1
@@ -131,13 +131,13 @@
 			- ex) single / multi
 		- HPCD_SINGLE_OPERATOR_VERSION
 			- hypercloud-single-operator의 버전
-			- ex) 5.0.25.15
+			- ex) 5.0.25.16
 		- HPCD_MULTI_OPERATOR_VERSION
 			- hypercloud-multi-operator의 버전
 			- ex) 5.0.25.14
 		- HPCD_API_SERVER_VERSION
 			- hypercloud-api-server의 버전
-			- ex) 5.0.26.3
+			- ex) 5.0.26.6
 		- HPCD_POSTGRES_VERSION
 			- postgres의 버전
 			- ex) 5.0.0.1
