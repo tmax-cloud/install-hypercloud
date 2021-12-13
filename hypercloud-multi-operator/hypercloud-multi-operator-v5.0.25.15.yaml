@@ -960,7 +960,7 @@ spec:
         env:
         - name: TZ
           value: Asia/Seoul
-        image: tmaxcloudck/hypercloud-multi-operator:test
+        image: tmaxcloudck/hypercloud-multi-operator:b5.0.25.15
         name: manager
         ports:
         - containerPort: 9443
