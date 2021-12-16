@@ -167,7 +167,7 @@ data:
         container: manager
       
     - name: HyperCloud Console
-      namespace: console-system
+      namespace: api-gateway-system
       selector:
         matchLabels:
           statusLabel:
@@ -178,19 +178,6 @@ data:
 
       versionProbe:
        container: console
-
-    - name: HyperCloud Console Operator
-      namespace: console-system
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=console
-          versionLabel:
-          - app=console
-      readinessProbe:
-
-      versionProbe:
-        container: manager
 
     - name: HyperAuth
       namespace:
@@ -226,17 +213,18 @@ data:
 
       versionProbe:
 
-    - name: Nginx Ingress Controller
-      namespace: ingress-nginx-system
+    - name: API gateway
+      namespace: api-gateway-system
       selector:
         matchLabels:
           statusLabel:
-          - app.kubernetes.io/component=controller
+          - app=traefik
           versionLabel:
-          - app.kubernetes.io/component=controller
+          - app=traefik
       readinessProbe:
 
       versionProbe:
+        container: traefik
 
     - name: Prometheus
       namespace: monitoring
