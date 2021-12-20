@@ -35,8 +35,8 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
-  if [ -e "crd/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml" ]; then
-    kubectl apply -f  hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+  if [ -e "key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml" ]; then
+    kubectl apply -f  key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
 popd
 
@@ -162,8 +162,8 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
   kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
-  if [ -e "crd/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml" ]; then
-    kubectl apply -f  hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  if [ -e "key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml" ]; then
+    kubectl apply -f  key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
 
   for capi_provider_template in capi-*-template-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
