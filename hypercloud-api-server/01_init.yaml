@@ -171,9 +171,9 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - app=console
+          - app.kubernetes.io/name=console
           versionLabel:
-          - app=console
+          - app.kubernetes.io/name=console
       readinessProbe:
 
       versionProbe:
@@ -218,9 +218,9 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - app=traefik
+          - app.kubernetes.io/name=traefik
           versionLabel:
-          - app=traefik
+          - app.kubernetes.io/name=traefik
       readinessProbe:
 
       versionProbe:
