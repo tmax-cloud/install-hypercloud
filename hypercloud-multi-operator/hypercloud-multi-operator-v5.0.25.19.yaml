@@ -1053,6 +1053,7 @@ metadata:
   name: hypercloud-multi-operator-mutating-webhook-configuration
 webhooks:
 - admissionReviewVersions:
+  - v1beta1
   - v1
   clientConfig:
     caBundle: Cg==
@@ -1081,6 +1082,7 @@ metadata:
   name: hypercloud-multi-operator-validating-webhook-configuration
 webhooks:
 - admissionReviewVersions:
+  - v1beta1
   - v1
   clientConfig:
     caBundle: Cg==
@@ -1103,6 +1105,7 @@ webhooks:
     - clusterclaims/status
   sideEffects: NoneOnDryRun
 - admissionReviewVersions:
+  - v1beta1
   - v1
   clientConfig:
     caBundle: Cg==
@@ -1123,6 +1126,7 @@ webhooks:
     - clustermanagers
   sideEffects: NoneOnDryRun
 - admissionReviewVersions:
+  - v1beta1
   - v1
   clientConfig:
     caBundle: Cg==
