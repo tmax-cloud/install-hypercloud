@@ -76,6 +76,8 @@ pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  04_default-role.yaml
 popd
 
+timeout 3m kubectl -n hypercloud5-system rollout status deployment/hypercloud5-api-server
+
 #  step 4 - create and apply webhook and audit config
 pushd $HYPERCLOUD_API_SERVER_HOME/config
   sudo chmod +x *.sh 
