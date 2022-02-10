@@ -104,6 +104,9 @@ spec:
           - name: html
             mountPath: /run/configs/html
             readOnly: true
+          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            name: hypercloud5-api-server-service-account-token
+            readOnly: true
       volumes:
       - name : html
         configMap:
@@ -131,6 +134,10 @@ spec:
           items:
           - key: ACCESS_TOKEN
             path: accessSecret
+      - name: hypercloud5-api-server-service-account-token
+        secret:
+          defaultMode: 420
+          secretName: hypercloud5-api-server-service-account-token
 ---
 apiVersion: v1
 kind: Secret
