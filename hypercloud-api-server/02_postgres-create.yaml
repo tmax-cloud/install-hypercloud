@@ -56,6 +56,9 @@ spec:
               subPath: postgres
             - mountPath: /docker-entrypoint-initdb.d
               name: initdbsql
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: hypercloud5-api-server-service-account-token
+              readOnly: true
       serviceAccountName: hypercloud5-admin    
       volumes:
       - name: data
@@ -67,6 +70,10 @@ spec:
           items:
           - key: INIT_DB_SQL
             path: init-db.sql
+      - name: hypercloud5-api-server-service-account-token
+        secret:
+          defaultMode: 420
+          secretName: hypercloud5-api-server-service-account-token
 ---
 
 kind: PersistentVolumeClaim
