@@ -305,18 +305,6 @@ data:
       versionProbe:
         container: manager
 
-    - name: KubeFed
-      namespace: kube-federation-system
-      selector:
-        matchLabels:
-          statusLabel:
-          - kubefed-control-plane=controller-manager
-          versionLabel:
-          - kubefed-control-plane=controller-manager
-      readinessProbe:
-
-      versionProbe:
-
     - name: Grafana
       namespace: monitoring
       selector:
