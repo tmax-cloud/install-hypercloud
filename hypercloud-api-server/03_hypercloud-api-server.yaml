@@ -75,6 +75,8 @@ spec:
               value: "{KAFKA_ENABLED}"
             - name: KAFKA_GROUP_ID
               value: {KAFKA_GROUP_ID}
+            - name: HC_DOMAIN
+              value: {CUSTOM_DOMAIN}
           ports:
           - containerPort: 443
             name: https 
