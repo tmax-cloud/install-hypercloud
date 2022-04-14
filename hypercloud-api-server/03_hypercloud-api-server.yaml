@@ -77,6 +77,8 @@ spec:
               value: {KAFKA_GROUP_ID}
             - name: HC_DOMAIN
               value: {CUSTOM_DOMAIN}
+            - name: CONSOLE_SUBDOMAIN
+              value: {CONSOLE_SUBDOMAIN}
           ports:
           - containerPort: 443
             name: https 
