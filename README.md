@@ -13,7 +13,7 @@
 	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.25.14](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 - hypercloud-multi-agent
-	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.14](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
+	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.0](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-agent](https://github.com/tmax-cloud/hypercloud-multi-agent)
 
 ## Prerequisite
