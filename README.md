@@ -124,7 +124,7 @@
 
 ## Step 0. hypercloud.config 설정
 - 목적 : `hypercloud.config 파일에 설치를 위한 정보 기입`
-- 순서: 
+- 순서 : 
 	- 환경에 맞는 config 내용 작성
 		- HPCD_MODE
 			- single 단일 혹은 single/multi 전부 설치 여부
