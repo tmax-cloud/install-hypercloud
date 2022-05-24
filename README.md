@@ -2,6 +2,16 @@
 
 # hypercloud 설치 가이드
 
+## 개요
+- hypercloud-api-server
+	- hypercloud에 필요한 API와 웹훅 및 metering, audit 등의 서비스를 제공하는 서버
+- hypercloud-single-operator
+	- NamespaceClaim, ResourceQuotaClaim, RoleBindingClaim을 관리하는 오퍼레이터
+- hypercloud-multi-operator
+	- multi cluster service(단일 클러스터 콘솔에서 여러 클러스터를 관리)를 위한 오퍼레이터
+- hypercloud-multi-agent
+	- multi cluster의 endpoint 및 resource health check를 위한 리소스
+
 ## 구성 요소 및 버전
 - hypercloud-api-server
 	- image: [tmaxcloudck/hypercloud-api-server:b5.0.26.6](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
