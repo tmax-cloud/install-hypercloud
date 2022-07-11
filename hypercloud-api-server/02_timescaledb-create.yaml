@@ -1,35 +1,36 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-service
+  name: timescaledb-service
   namespace: hypercloud5-system
   labels:
-    app: postgres
+    app: timescaledb
 spec:
   type: ClusterIP
   ports:
    - port: 5432
   selector:
-   app: postgres
+   app: timescaledb
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: postgres
+  name: timescaledb
   namespace: hypercloud5-system
 spec:
+  serviceName: timescaledb
   selector:
     matchLabels:
-      app: postgres
+      app: timescaledb
   replicas: 1
   template:
     metadata:
       labels:
-        app: postgres
+        app: timescaledb
     spec:
       containers:
-        - name: postgres
-          image: tmaxcloudck/postgres-cron:{HPCD_POSTGRES_VERSION}
+        - name: timescaledb
+          image: tmaxcloudck/timescaledb-cron:{HPCD_TIMESCALEDB_VERSION}
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
@@ -41,8 +42,10 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: postgres-secret
+                name: timescaledb-secret
                 key: POSTGRES_PASSWORD
+          - name: PGDATA
+            value: "/home/postgres/pgdata/data"
           resources:
             limits:
               cpu: "500m"
@@ -50,8 +53,12 @@ spec:
             requests:
               cpu: "300m"
               memory: "100Mi"
+          lifecycle:
+            postStart:
+             exec:
+               command: ["sh", "-c", "sleep 20s && echo \"shared_preload_libraries = 'pg_cron'\" >> /home/postgres/pgdata/data/postgresql.conf &&  echo \"cron.database_name = 'postgres'\" >> /home/postgres/pgdata/data/postgresql.conf"]
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
+            - mountPath: /home/postgres/pgdata
               name: data
               subPath: postgres
             - mountPath: /docker-entrypoint-initdb.d
@@ -63,23 +70,24 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: postgres-data
+          claimName: timescaledb-data
       - name: initdbsql
         configMap:
-          name: postgres-init-config
+          name: timescaledb-init-config
           items:
           - key: INIT_DB_SQL
             path: init-db.sql
       - name: hypercloud5-api-server-service-account-token
         secret:
           defaultMode: 420
-          secretName: hypercloud5-api-server-service-account-token
+          secretName: hypercloud5-admin-token-jj8n5
+
 ---
 
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgres-data
+  name: timescaledb-data
   namespace: hypercloud5-system
 spec:
   #storageClassName: csi-cephfs-sc
@@ -94,7 +102,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-secret
+  name: timescaledb-secret
   namespace: hypercloud5-system
 type: Opaque
 data:
@@ -105,7 +113,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-init-config
+  name: timescaledb-init-config
   namespace: hypercloud5-system
 data:
   INIT_DB_SQL: |-
@@ -123,9 +131,9 @@ data:
     CREATE INDEX TIME_INDEX ON AUDIT (STAGETIMESTAMP);
     CREATE TABLE CLUSTER_MEMBER (ID SERIAL, NAMESPACE VARCHAR(255) NOT NULL, CLUSTER VARCHAR(255) NOT NULL, MEMBER_ID VARCHAR(255) NOT NULL, MEMBER_NAME VARCHAR(255), ATTRIBUTE VARCHAR(255), ROLE VARCHAR(255), STATUS VARCHAR(255), CREATEDTIME TIMESTAMP NOT NULL DEFAULT NOW(), UPDATEDTIME TIMESTAMP NOT NULL DEFAULT NOW());
     ALTER TABLE CLUSTER_MEMBER ADD CONSTRAINT MEMBER_CONSTRAINT UNIQUE (NAMESPACE, CLUSTER, MEMBER_ID, ATTRIBUTE);
+    CREATE EXTENSION pg_cron;
     CREATE UNIQUE INDEX CLUSTER_STATUS ON CLUSTER_MEMBER (NAMESPACE, CLUSTER, STATUS) WHERE ( STATUS = 'owner');
-    SELECT cron.schedule('* * * * *', $$DELETE FROM CLUSTER_MEMBER WHERE STATUS = 'pending' AND CREATEDTIME < now() - interval '{INVITATION_TOKEN_EXPIRED_DATE}'$$);
+    SELECT cron.schedule('* * * * *', $$DELETE FROM CLUSTER_MEMBER WHERE STATUS = 'pending' AND CREATEDTIME < now() - interval '1days'$$);
     CREATE OR REPLACE FUNCTION UPDATE_TIME() RETURNS TRIGGER AS $$ BEGIN NEW.updatedtime = NOW(); RETURN NEW; END; $$ LANGUAGE plpgsql;
     CREATE TRIGGER TRIGGER_UPDATE_TIME AFTER UPDATE ON CLUSTER_MEMBER FOR EACH ROW EXECUTE PROCEDURE UPDATE_TIME();
     ALTER DATABASE postgres set idle_in_transaction_session_timeout = '3min';
-
