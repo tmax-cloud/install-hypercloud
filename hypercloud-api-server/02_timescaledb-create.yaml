@@ -80,7 +80,7 @@ spec:
       - name: hypercloud5-api-server-service-account-token
         secret:
           defaultMode: 420
-          secretName: hypercloud5-admin-token-jj8n5
+          secretName: hypercloud5-api-server-service-account-token
 
 ---
 
