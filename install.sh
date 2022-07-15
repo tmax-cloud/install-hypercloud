@@ -69,6 +69,8 @@ sudo sed -i 's#{INGRESS_SVCURL}#'${INGRESS_SVCURL}'#g' ${HYPERCLOUD_API_SERVER_H
 sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 sudo sed -i 's#${CUSTOM_DOMAIN}#'${CUSTOM_DOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#${CONSOLE_SUBDOMAIN}#'${CONSOLE_SUBDOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's/{LOG_LEVEL}/'${LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's/{POSTGRES_LOG_LEVEL}/'${POSTGRES_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME

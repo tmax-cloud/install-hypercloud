@@ -167,6 +167,12 @@
 		- KAFKA_ENABLED
 			- KAFKA 사용 여부
 			- ex) "true", "false"
+		- LOG_LEVEL
+			- hypercloud5-api-server의 로그 레벨
+			- ex) TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+		- POSTGRES_LOG_LEVEL
+			- postgres의 로그 레벨
+			- ex) DEBUG5, ..., DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC
 
 		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
 		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
