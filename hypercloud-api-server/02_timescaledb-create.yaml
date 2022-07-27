@@ -542,7 +542,7 @@ metadata:
     app: timescaledb
     cluster-name: timescaledb
     release: timescaledb
-  name: timescaledb
+  name: timescaledb-service
   namespace: hypercloud5-system
 spec:
   ports:
@@ -573,7 +573,7 @@ spec:
       app: timescaledb
       cluster-name: timescaledb
       release: timescaledb
-  serviceName: timescaledb
+  serviceName: timescaledb-service
   template:
     metadata:
       labels:
