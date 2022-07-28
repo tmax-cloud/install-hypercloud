@@ -520,9 +520,9 @@ metadata:
 
 apiVersion: v1
 data:
-  PATRONI_REPLICATION_PASSWORD: bFFLdWR4SFJGSUZoZXprOEwwbjJzZ1ByZ2lRNFJBS0o=
-  PATRONI_SUPERUSER_PASSWORD: dVZZNmNkSnoyQjBqWWZ4TkFXOWVHeFFldXhVM29vWEE=
-  PATRONI_admin_PASSWORD: NGV6SlVYQlFkcWRwZkFsMk5JYldlUWhycTVJT2xqQlk=
+  PATRONI_REPLICATION_PASSWORD: dG1heA== #bFFLdWR4SFJGSUZoZXprOEwwbjJzZ1ByZ2lRNFJBS0o=
+  PATRONI_SUPERUSER_PASSWORD: dG1heA== #dVZZNmNkSnoyQjBqWWZ4TkFXOWVHeFFldXhVM29vWEE=
+  PATRONI_admin_PASSWORD: dG1heA== #NGV6SlVYQlFkcWRwZkFsMk5JYldlUWhycTVJT2xqQlk=
 kind: Secret
 metadata:
   labels:
@@ -549,6 +549,10 @@ spec:
     port: 5432
     protocol: TCP
     targetPort: postgresql
+  selector:
+    app: timescaledb
+    cluster-name: timescaledb
+    release: timescaledb
   sessionAffinity: None
   type: ClusterIP
 
