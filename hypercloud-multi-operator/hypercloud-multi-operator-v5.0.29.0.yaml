@@ -920,9 +920,9 @@ rules:
   - update
   - watch
 - apiGroups:
-  - traefik.containo.us
+  - argoproj.io
   resources:
-  - middlewares
+  - applications
   verbs:
   - create
   - delete
