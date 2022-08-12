@@ -167,9 +167,15 @@
 		- KAFKA_ENABLED
 			- KAFKA 사용 여부
 			- ex) "true", "false"
-		- LOG_LEVEL
+		- API_SERVER_LOG_LEVEL
 			- hypercloud5-api-server의 로그 레벨
 			- ex) TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+		- SINGLE_OPERATOR_LOG_LEVEL
+			- hypercloud-single-operator의 로그 레벨
+			- ex) error, info, debug
+		- MULTI_OPERATOR_LOG_LEVEL
+			- hypercloud-multi-operator의 로그 레벨
+			- ex) error, info, debug
 		- POSTGRES_LOG_LEVEL
 			- postgres의 로그 레벨
 			- ex) DEBUG5, ..., DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC

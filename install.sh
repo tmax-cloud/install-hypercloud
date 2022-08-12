@@ -34,6 +34,7 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
     sudo sed -i 's#tmaxcloudck/hypercloud-single-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-single-operator#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
+  sudo sed -i 's/{SINGLE_OPERATOR_LOG_LEVEL}/'${SINGLE_OPERATOR_LOG_LEVEL}'/g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   if [ -e "key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml" ]; then
     kubectl apply -f  key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
@@ -69,7 +70,7 @@ sudo sed -i 's#{INGRESS_SVCURL}#'${INGRESS_SVCURL}'#g' ${HYPERCLOUD_API_SERVER_H
 sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
 sudo sed -i 's#${CUSTOM_DOMAIN}#'${CUSTOM_DOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#${CONSOLE_SUBDOMAIN}#'${CONSOLE_SUBDOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's/{LOG_LEVEL}/'${LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's/{API_SERVER_LOG_LEVEL}/'${API_SERVER_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{POSTGRES_LOG_LEVEL}/'${POSTGRES_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
 
 # step 3  - apply manifests
@@ -168,6 +169,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
+  sudo sed -i 's/{MULTI_OPERATOR_LOG_LEVEL}/'${MULTI_OPERATOR_LOG_LEVEL}'/g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   if [ -e "key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml" ]; then
     kubectl apply -f  key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
