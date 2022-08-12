@@ -12,18 +12,23 @@
 - hypercloud-multi-agent
 	- multi cluster의 endpoint 및 resource health check를 위한 리소스
 
+- 이 인스톨러는 __아래에 기술된 각 모듈의 버전 혹은 그 이상의 버전에서만__ 정상 동작이 보장됩니다.
+  - hypercloud-api-server:b5.0.29.2
+  - hypercloud-single-operator:b5.0.29.1
+  - hypercloud-multi-operator:b5.0.26.14
+
 ## 구성 요소 및 버전
 - hypercloud-api-server
-	- image: [tmaxcloudck/hypercloud-api-server:b5.0.26.6](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	- image: [tmaxcloudck/hypercloud-api-server:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 - hypercloud-single-operator
-	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.25.16](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	- git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 - hypercloud-multi-operator
-	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.25.14](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 - hypercloud-multi-agent
-	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.0](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
+	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.14](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-agent](https://github.com/tmax-cloud/hypercloud-multi-agent)
 
 ## Prerequisite
