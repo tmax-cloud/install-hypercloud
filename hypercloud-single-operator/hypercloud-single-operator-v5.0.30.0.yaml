@@ -615,7 +615,7 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
-        - --zap-log-level={SINGLE_OPERATOR_LOG_LEVEL}
+        - --zap-log-level=info
         command:
         - /manager
         image: tmaxcloudck/hypercloud-single-operator:b5.0.30.0

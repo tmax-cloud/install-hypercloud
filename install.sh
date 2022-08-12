@@ -34,7 +34,7 @@ pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
     sudo sed -i 's#tmaxcloudck/hypercloud-single-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-single-operator#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   fi
-  sudo sed -i 's/{SINGLE_OPERATOR_LOG_LEVEL}/'${SINGLE_OPERATOR_LOG_LEVEL}'/g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
+  sudo sed -i 's/--zap-log-level=info/'--zap-log-level=${SINGLE_OPERATOR_LOG_LEVEL}'/g' hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   kubectl apply -f  hypercloud-single-operator-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
   if [ -e "key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml" ]; then
     kubectl apply -f  key-mapping/hypercloud-single-operator-crd-v${HPCD_SINGLE_OPERATOR_VERSION}.yaml
@@ -169,7 +169,7 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
     sudo sed -i 's#tmaxcloudck/hypercloud-multi-operator#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-operator#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
     sudo sed -i 's#gcr.io/kubebuilder/kube-rbac-proxy#'${REGISTRY}'/gcr.io/kubebuilder/kube-rbac-proxy#g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   fi
-  sudo sed -i 's/{MULTI_OPERATOR_LOG_LEVEL}/'${MULTI_OPERATOR_LOG_LEVEL}'/g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
+  sudo sed -i 's/--zap-log-level=info/'--zap-log-level=${MULTI_OPERATOR_LOG_LEVEL}'/g' hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   kubectl apply -f hypercloud-multi-operator-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
   if [ -e "key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml" ]; then
     kubectl apply -f  key-mapping/hypercloud-multi-operator-crd-v${HPCD_MULTI_OPERATOR_VERSION}.yaml
