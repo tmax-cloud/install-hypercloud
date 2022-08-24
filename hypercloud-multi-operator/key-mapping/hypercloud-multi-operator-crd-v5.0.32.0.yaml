@@ -105,7 +105,7 @@ spec:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
             applicationLink:
-              type: "boolean"
+              type: "string"
             argoReady:
               type: "boolean"
             authClientReady:
