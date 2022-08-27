@@ -571,6 +571,7 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
+        - --zap-log-level=info
         command:
         - /manager
         image: tmaxcloudck/hypercloud-single-operator:b5.0.31.0
@@ -673,6 +674,7 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
     - namespaceclaims
     - namespaceclaims/status
@@ -695,6 +697,7 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
     - resourcequotaclaims
     - resourcequotaclaims/status
@@ -717,6 +720,8 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
+    - rolebindingclaims
     - rolebindingclaims/status
   sideEffects: NoneOnDryRun
