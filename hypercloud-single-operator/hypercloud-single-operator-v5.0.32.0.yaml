@@ -674,6 +674,7 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
     - namespaceclaims
     - namespaceclaims/status
@@ -696,6 +697,7 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
     - resourcequotaclaims
     - resourcequotaclaims/status
@@ -718,6 +720,8 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
+    - rolebindingclaims
     - rolebindingclaims/status
   sideEffects: NoneOnDryRun
