@@ -201,6 +201,8 @@ spec:
                   description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.scopes.items"
                   type: "string"
                 type: "array"
+            required:
+            - hard
             type: "object"
           status:
             description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
@@ -322,6 +324,8 @@ spec:
                   description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.scopes.items"
                   type: "string"
                 type: "array"
+            required:
+            - hard
             type: "object"
           status:
             description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
