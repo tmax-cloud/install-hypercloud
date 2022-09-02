@@ -105,6 +105,8 @@ spec:
                     each object tracked by a quota
                   type: string
                 type: array
+            required:
+            - hard
             type: object
           status:
             description: Status shows the present status of the NamespaceClaim
@@ -238,6 +240,8 @@ spec:
                       - scopeName
                       type: object
                     type: array
+                required:
+                - hard
                 type: object
               scopes:
                 description: A collection of filters that must match each object tracked
