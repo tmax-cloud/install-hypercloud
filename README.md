@@ -187,7 +187,14 @@
 			- 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
 			- ex ) ("passwd111" "passwd222")
 
-
+		`아래 2개 항목은 커스텀 도메인 및 콘솔 도메인을 위한 설정`  
+		`https://{CONSOLE_SUBDOMAIN}.{CUSTOM_DOMAIN}의 형식으로 사용됨`
+		- CUSTOM_DOMAIN
+			- 서브 도메인을 제외한 도메인으로 구성  
+			- ex) domain.com
+		- CONSOLE_SUBDOMAIN
+			- 콘솔의 서브 도메인으로 콘솔의 경로를 나타냄   
+			- ex) console-subdomain
 	
 
 ## Step 1. installer 실행

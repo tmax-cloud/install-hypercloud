@@ -169,6 +169,7 @@ spec:
                 - Rejected
                 - Error
                 - ClusterDeleted
+                - Cluster Deleted
                 type: string
               reason:
                 type: string
@@ -295,6 +296,8 @@ spec:
           status:
             description: ClusterManagerStatus defines the observed state of ClusterManager
             properties:
+              applicationLink:
+                type: string
               argoReady:
                 type: boolean
               authClientReady:
@@ -305,7 +308,7 @@ spec:
                 type: boolean
               gatewayReady:
                 type: boolean
-              hyperregistryOidcReady:
+              gatewayReadyMigration:
                 type: boolean
               masterRun:
                 type: integer
@@ -510,6 +513,8 @@ spec:
           status:
             description: ClusterRegistrationStatus defines the observed state of ClusterRegistration
             properties:
+              clusterValidated:
+                type: boolean
               masterNum:
                 type: integer
               masterRun:
@@ -577,6 +582,8 @@ spec:
                 type: boolean
               reason:
                 type: string
+              secretReady:
+                type: boolean
               version:
                 type: string
               workerNum:
@@ -670,6 +677,18 @@ rules:
   - list
   - patch
   - post
+  - update
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - applications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -1045,6 +1064,7 @@ spec:
       - args:
         - --metrics-addr=127.0.0.1:8080
         - --enable-leader-election
+        - --zap-log-level=info
         command:
         - /manager
         env:
@@ -1054,9 +1074,7 @@ spec:
           value: ${auth_client_secret}
         - name: AUTH_SUBDOMAIN
           value: ${auth_subdomain}
-        - name: HYPERREGISTRY_ENABLED
-          value: ${hyperregistry_enabled}
-        image: tmaxcloudck/hypercloud-multi-operator:b5.0.27.0
+        image: tmaxcloudck/hypercloud-multi-operator:b5.0.33.0
         name: manager
         ports:
         - containerPort: 9443

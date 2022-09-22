@@ -4,7 +4,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.6.2"
+    controller-gen.kubebuilder.io/version: "v0.3.0"
   name: "clustermanagers.cluster.tmax.io"
 spec:
   additionalPrinterColumns:
@@ -251,7 +251,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.6.2"
+    controller-gen.kubebuilder.io/version: "v0.3.0"
   name: "clusterclaims.claim.tmax.io"
 spec:
   additionalPrinterColumns:
@@ -433,7 +433,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.6.2"
+    controller-gen.kubebuilder.io/version: "v0.3.0"
   name: "clusterregistrations.cluster.tmax.io"
 spec:
   additionalPrinterColumns:

@@ -48,6 +48,7 @@ spec:
     shortNames:
     - "clm"
     singular: "clustermanager"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -103,6 +104,8 @@ spec:
         status:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            applicationLink:
+              type: "string"
             argoReady:
               type: "boolean"
             authClientReady:
@@ -113,7 +116,7 @@ spec:
               type: "boolean"
             gatewayReady:
               type: "boolean"
-            hyperregistryOidcReady:
+            gatewayReadyMigration:
               type: "boolean"
             masterRun:
               type: "integer"
@@ -272,6 +275,7 @@ spec:
     shortNames:
     - "cc"
     singular: "clusterclaim"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -409,6 +413,7 @@ spec:
               - "Rejected"
               - "Error"
               - "ClusterDeleted"
+              - "Cluster Deleted"
               type: "string"
             reason:
               type: "string"
@@ -456,6 +461,7 @@ spec:
     shortNames:
     - "clr"
     singular: "clusterregistration"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -488,6 +494,8 @@ spec:
         status:
           description: "%clusterregistrations.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            clusterValidated:
+              type: "boolean"
             masterNum:
               type: "integer"
             masterRun:
@@ -547,6 +555,8 @@ spec:
               type: "boolean"
             reason:
               type: "string"
+            secretReady:
+              type: "boolean"
             version:
               type: "string"
             workerNum:
