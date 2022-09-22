@@ -12,8 +12,12 @@
 - hypercloud-multi-agent
 	- multi cluster의 endpoint 및 resource health check를 위한 리소스
 
+- 이 인스톨러는 __아래에 기술된 각 모듈의 버전 혹은 그 이상의 버전에서만__ 정상 동작이 보장됩니다.
+  - hypercloud-api-server:b5.0.34.0
+  - hypercloud-single-operator:b5.0.34.0
+  - hypercloud-multi-operator:b5.0.34.0
+
 ## 구성 요소 및 버전
-- 이 브랜치의 인스톨러는 hypercloud 5.0.32.0 버전 이상에서만 정상 설치가 가능합니다. 이하의 버전은 다른 브랜치의 인스톨러를 참고바랍니다.
 - hypercloud-api-server
 	- image: [tmaxcloudck/hypercloud-api-server:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
@@ -24,7 +28,7 @@
 	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 - hypercloud-multi-agent
-	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.0](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
+	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.14](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-agent](https://github.com/tmax-cloud/hypercloud-multi-agent)
 
 ## Prerequisite
@@ -168,6 +172,18 @@
 		- KAFKA_ENABLED
 			- KAFKA 사용 여부
 			- ex) "true", "false"
+		- API_SERVER_LOG_LEVEL
+			- hypercloud5-api-server의 로그 레벨
+			- ex) TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+		- SINGLE_OPERATOR_LOG_LEVEL
+			- hypercloud-single-operator의 로그 레벨
+			- ex) error, info, debug
+		- MULTI_OPERATOR_LOG_LEVEL
+			- hypercloud-multi-operator의 로그 레벨
+			- ex) error, info, debug
+		- TIMESCALEDB_LOG_LEVEL
+			- timescaledb의 로그 레벨
+			- ex) DEBUG5, ..., DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC
 		- TIMESCALEDB_XXX_CHUNK_INTERVAL
 		    - XXX 청크 테이블을 나누어 저장할 시간 단위
 			- ex) 1days, 1months, 1years

@@ -60,6 +60,8 @@ spec:
         - name: hypercloud5-api-server
           image: tmaxcloudck/hypercloud-api-server:{HPCD_API_SERVER_VERSION}
           imagePullPolicy: IfNotPresent
+          args:
+          - --log-level={API_SERVER_LOG_LEVEL}
           env:
             - name: TZ
               value: "Asia/Seoul"
