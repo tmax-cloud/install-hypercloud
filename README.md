@@ -13,19 +13,19 @@
 	- multi cluster의 endpoint 및 resource health check를 위한 리소스
 
 - 이 인스톨러는 __아래에 기술된 각 모듈의 버전 혹은 그 이상의 버전에서만__ 정상 동작이 보장됩니다.
-  - hypercloud-api-server:b5.0.29.2
-  - hypercloud-single-operator:b5.0.29.1
-  - hypercloud-multi-operator:b5.0.26.14
+  - hypercloud-api-server:b5.0.34.0
+  - hypercloud-single-operator:b5.0.34.0
+  - hypercloud-multi-operator:b5.0.34.0
 
 ## 구성 요소 및 버전
 - hypercloud-api-server
-	- image: [tmaxcloudck/hypercloud-api-server:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	- image: [tmaxcloudck/hypercloud-api-server:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 - hypercloud-single-operator
-	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	- git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 - hypercloud-multi-operator
-	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.31.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 - hypercloud-multi-agent
 	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.14](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
@@ -87,11 +87,11 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_API_SERVER_VERSION=5.0.26.6
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.25.16
-	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.25.14
+	$ export HPCD_API_SERVER_VERSION=5.0.34.0
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.34.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.34.0
 	$ export HPCD_MULTI_AGENT_VERSION=5.0.25.14
-	$ export HPCD_POSTGRES_VERSION=5.0.0.1
+	$ export HPCD_TIMESCALEDB_VERSION=5.0.0.0
 	$ cd $HYPERCLOUD_HOME
 	```
   - 외부 네트워크 통신이 가능한 환경에서 이미지 다운로드
@@ -108,8 +108,8 @@
 	$ sudo docker pull tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
 	$ sudo docker save tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION} > multi-operator_b${HPCD_MULTI_OPERATOR_VERSION}.tar
 
-	$ sudo docker pull tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
-	$ sudo docker save tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} > postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
+	$ sudo docker pull tmaxcloudck/timescaledb-cron:b${HPCD_TIMESCALEDB_VERSION}
+	$ sudo docker save tmaxcloudck/timescaledb-cron:b${HPCD_TIMESCALEDB_VERSION} > timescaledb-cron_b${HPCD_TIMESCALEDB_VERSION}.tar
 	```
   - tar 파일을 폐쇄망 환경으로 이동시킨 후, registry에 이미지 push
     ``` bash
@@ -132,9 +132,9 @@
 	$ sudo docker tag tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION} ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
 	$ sudo docker push ${REGISTRY}/tmaxcloudck/hypercloud-multi-operator:b${HPCD_MULTI_OPERATOR_VERSION}
 
-	$ sudo docker load < postgres-cron_b${HPCD_POSTGRES_VERSION}.tar
-	$ sudo docker tag tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION} ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
-	$ sudo docker push ${REGISTRY}/tmaxcloudck/postgres-cron:b${HPCD_POSTGRES_VERSION}
+	$ sudo docker load < timescaledb-cron_b${HPCD_TIMESCALEDB_VERSION}.tar
+	$ sudo docker tag tmaxcloudck/timescaledb-cron:b${HPCD_TIMESCALEDB_VERSION} ${REGISTRY}/tmaxcloudck/timescaledb-cron:b${HPCD_TIMESCALEDB_VERSION}
+	$ sudo docker push ${REGISTRY}/tmaxcloudck/timescaledb-cron:b${HPCD_TIMESCALEDB_VERSION}
 	```
 
 ## Step 0. hypercloud.config 설정
@@ -146,16 +146,16 @@
 			- ex) single / multi
 		- HPCD_SINGLE_OPERATOR_VERSION
 			- hypercloud-single-operator의 버전
-			- ex) 5.0.25.16
+			- ex) 5.0.34.0
 		- HPCD_MULTI_OPERATOR_VERSION
 			- hypercloud-multi-operator의 버전
-			- ex) 5.0.25.14
+			- ex) 5.0.34.0
 		- HPCD_API_SERVER_VERSION
 			- hypercloud-api-server의 버전
-			- ex) 5.0.26.6
-		- HPCD_POSTGRES_VERSION
-			- postgres의 버전
-			- ex) 5.0.0.1
+			- ex) 5.0.34.0
+		- HPCD_TIMESCALEDB_VERSION
+			- timescaledb의 버전
+			- ex) 5.0.0.0
 		- HPCD_MULTI_AGENT_VERSION
 			- hypercloud-multi-agent의 버전
 			- ex) 5.0.25.14
@@ -181,9 +181,15 @@
 		- MULTI_OPERATOR_LOG_LEVEL
 			- hypercloud-multi-operator의 로그 레벨
 			- ex) error, info, debug
-		- POSTGRES_LOG_LEVEL
-			- postgres의 로그 레벨
+		- TIMESCALEDB_LOG_LEVEL
+			- timescaledb의 로그 레벨
 			- ex) DEBUG5, ..., DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC
+		- TIMESCALEDB_XXX_CHUNK_INTERVAL
+		    - XXX 청크 테이블을 나누어 저장할 시간 단위
+			- ex) 1days, 1months, 1years
+		- TIMESCALEDB_XXX_RETENTION_POLICY
+		    - XXX 청크 테이블의 보관 기간 (보관 기간 이후 자동 삭제됨)
+			- ex) 1days, 1months, 1years
 
 		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
 		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
@@ -197,7 +203,14 @@
 			- 메인 마스터 노드를 제외한 마스터 노드의 패스워드 배열
 			- ex ) ("passwd111" "passwd222")
 
-
+		`아래 2개 항목은 커스텀 도메인 및 콘솔 도메인을 위한 설정`  
+		`https://{CONSOLE_SUBDOMAIN}.{CUSTOM_DOMAIN}의 형식으로 사용됨`
+		- CUSTOM_DOMAIN
+			- 서브 도메인을 제외한 도메인으로 구성  
+			- ex) domain.com
+		- CONSOLE_SUBDOMAIN
+			- 콘솔의 서브 도메인으로 콘솔의 경로를 나타냄   
+			- ex) console-subdomain
 	
 
 ## Step 1. installer 실행

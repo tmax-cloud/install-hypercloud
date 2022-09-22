@@ -12,7 +12,7 @@ set -x
 pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl delete -f 04_default-role.yaml
   kubectl delete -f 03_hypercloud-api-server.yaml
-  kubectl delete -f 02_postgres-create.yaml
+  kubectl delete -f 02_timescaledb-create.yaml
   kubectl delete -f 01_init.yaml
   kubectl delete -f kafka-secret.yaml
   kubectl -n hypercloud5-system delete secret hypercloud5-api-server-certs

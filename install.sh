@@ -57,26 +57,38 @@ fi
 # step 2  - sed manifests
 if [ $REGISTRY != "{REGISTRY}" ]; then
   sudo sed -i 's#tmaxcloudck/hypercloud-api-server#'${REGISTRY}'/tmaxcloudck/hypercloud-api-server#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-  sudo sed -i 's#tmaxcloudck/postgres-cron#'${REGISTRY}'/tmaxcloudck/postgres-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
+  sudo sed -i 's#tmaxcloudck/timescaledb-cron#'${REGISTRY}'/tmaxcloudck/timescaledb-cron#g' ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
 fi
 sudo sed -i 's/{HPCD_API_SERVER_VERSION}/b'${HPCD_API_SERVER_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{HPCD_MODE}/'${HPCD_MODE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's/{HPCD_POSTGRES_VERSION}/b'${HPCD_POSTGRES_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
-sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
+sudo sed -i 's/{HPCD_TIMESCALEDB_VERSION}/b'${HPCD_TIMESCALEDB_VERSION}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
 sudo sed -i 's/{INVITATION_TOKEN_EXPIRED_DATE}/'${INVITATION_TOKEN_EXPIRED_DATE}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_ENABLED}/'${KAFKA_ENABLED}'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{KAFKA_GROUP_ID}/'hypercloud-api-server-$HOSTNAME-$(($RANDOM%100))'/g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{INGRESS_SVCURL}#'${INGRESS_SVCURL}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{HYPERAUTH_URL}#'${HYPERAUTH_URL}'#g'  ${HYPERCLOUD_API_SERVER_HOME}/01_init.yaml
-sudo sed -i 's#${CUSTOM_DOMAIN}#'${CUSTOM_DOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's#${CONSOLE_SUBDOMAIN}#'${CONSOLE_SUBDOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's/{API_SERVER_LOG_LEVEL}/'${API_SERVER_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
-sudo sed -i 's/{POSTGRES_LOG_LEVEL}/'${POSTGRES_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_postgres-create.yaml
+sudo sed -i 's/{TIMESCALEDB_LOG_LEVEL}/'${TIMESCALEDB_LOG_LEVEL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_AUDIT_CHUNK_INTERVAL}/'${TIMESCALEDB_AUDIT_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_AUDIT_RETENTION_POLICY}/'${TIMESCALEDB_AUDIT_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_EVENT_CHUNK_INTERVAL}/'${TIMESCALEDB_EVENT_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_EVENT_RETENTION_POLICY}/'${TIMESCALEDB_EVENT_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_HOUR_CHUNK_INTERVAL}/'${TIMESCALEDB_METERING_HOUR_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_HOUR_RETENTION_POLICY}/'${TIMESCALEDB_METERING_HOUR_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_DAY_CHUNK_INTERVAL}/'${TIMESCALEDB_METERING_DAY_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_DAY_RETENTION_POLICY}/'${TIMESCALEDB_METERING_DAY_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_MONTH_CHUNK_INTERVAL}/'${TIMESCALEDB_METERING_MONTH_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_MONTH_RETENTION_POLICY}/'${TIMESCALEDB_METERING_MONTH_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_YEAR_CHUNK_INTERVAL}/'${TIMESCALEDB_METERING_YEAR_CHUNK_INTERVAL}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's/{TIMESCALEDB_METERING_YEAR_RETENTION_POLICY}/'${TIMESCALEDB_METERING_YEAR_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
+sudo sed -i 's#{CUSTOM_DOMAIN}#'${CUSTOM_DOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's#{CONSOLE_SUBDOMAIN}#'${CONSOLE_SUBDOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
   kubectl apply -f  01_init.yaml
-  kubectl apply -f  02_postgres-create.yaml
+  kubectl apply -f  02_timescaledb-create.yaml
   kubectl apply -f  03_hypercloud-api-server.yaml
   kubectl apply -f  04_default-role.yaml
 popd
