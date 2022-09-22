@@ -13,14 +13,15 @@
 	- multi cluster의 endpoint 및 resource health check를 위한 리소스
 
 ## 구성 요소 및 버전
+- 이 브랜치의 인스톨러는 hypercloud 5.0.32.0 버전 이상에서만 정상 설치가 가능합니다. 이하의 버전은 다른 브랜치의 인스톨러를 참고바랍니다.
 - hypercloud-api-server
-	- image: [tmaxcloudck/hypercloud-api-server:b5.0.26.6](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	- image: [tmaxcloudck/hypercloud-api-server:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 - hypercloud-single-operator
-	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.25.16](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	- git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 - hypercloud-multi-operator
-	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.25.14](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
 - hypercloud-multi-agent
 	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.0](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
@@ -82,9 +83,9 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_API_SERVER_VERSION=5.0.26.6
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.25.16
-	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.25.14
+	$ export HPCD_API_SERVER_VERSION=5.0.34.0
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.34.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.34.0
 	$ export HPCD_MULTI_AGENT_VERSION=5.0.25.14
 	$ export HPCD_TIMESCALEDB_VERSION=5.0.0.0
 	$ cd $HYPERCLOUD_HOME
@@ -141,16 +142,16 @@
 			- ex) single / multi
 		- HPCD_SINGLE_OPERATOR_VERSION
 			- hypercloud-single-operator의 버전
-			- ex) 5.0.25.16
+			- ex) 5.0.34.0
 		- HPCD_MULTI_OPERATOR_VERSION
 			- hypercloud-multi-operator의 버전
-			- ex) 5.0.25.14
+			- ex) 5.0.34.0
 		- HPCD_API_SERVER_VERSION
 			- hypercloud-api-server의 버전
-			- ex) 5.0.26.6
+			- ex) 5.0.34.0
 		- HPCD_TIMESCALEDB_VERSION
 			- timescaledb의 버전
-			- ex) 5.0.0.1
+			- ex) 5.0.0.0
 		- HPCD_MULTI_AGENT_VERSION
 			- hypercloud-multi-agent의 버전
 			- ex) 5.0.25.14
@@ -167,6 +168,12 @@
 		- KAFKA_ENABLED
 			- KAFKA 사용 여부
 			- ex) "true", "false"
+		- TIMESCALEDB_XXX_CHUNK_INTERVAL
+		    - XXX 청크 테이블을 나누어 저장할 시간 단위
+			- ex) 1days, 1months, 1years
+		- TIMESCALEDB_XXX_RETENTION_POLICY
+		    - XXX 청크 테이블의 보관 기간 (보관 기간 이후 자동 삭제됨)
+			- ex) 1days, 1months, 1years
 
 		`아래 3개 항목은 마스터 노드 다중화 시에만 수정`  
 		`메인 마스터 노드를 제외한 마스터 노드들의 정보를 순서에 맞춰 작성`
