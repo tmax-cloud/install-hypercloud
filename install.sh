@@ -23,10 +23,8 @@ set -xe
 #  sudo timeout 5m kubectl -n cert-manager rollout status deployment/cert-manager-webhook
 #fi
 
-# Check if namespace exists
-if [ -z "$(kubectl get ns | grep hypercloud5-system | awk '{print $1}')" ]; then
-   kubectl create ns hypercloud5-system
-fi
+# Create hypercloud5-system namespace
+kubectl apply -f $HYPERCLOUD_API_SERVER_HOME/00_namespace.yaml
 
 # Install hypercloud-single-server
 pushd $HYPERCLOUD_SINGLE_OPERATOR_HOME
