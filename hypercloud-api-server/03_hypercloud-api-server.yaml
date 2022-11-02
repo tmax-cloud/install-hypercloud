@@ -81,6 +81,8 @@ spec:
               value: {CUSTOM_DOMAIN}
             - name: CONSOLE_SUBDOMAIN
               value: {CONSOLE_SUBDOMAIN}
+            - name: KUBECTL_TIMEOUT
+              value: {KUBECTL_TIMEOUT}
           ports:
           - containerPort: 443
             name: https 

@@ -82,6 +82,7 @@ sudo sed -i 's/{TIMESCALEDB_METERING_YEAR_CHUNK_INTERVAL}/'${TIMESCALEDB_METERIN
 sudo sed -i 's/{TIMESCALEDB_METERING_YEAR_RETENTION_POLICY}/'${TIMESCALEDB_METERING_YEAR_RETENTION_POLICY}'/g'  ${HYPERCLOUD_API_SERVER_HOME}/02_timescaledb-create.yaml
 sudo sed -i 's#{CUSTOM_DOMAIN}#'${CUSTOM_DOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 sudo sed -i 's#{CONSOLE_SUBDOMAIN}#'${CONSOLE_SUBDOMAIN}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
+sudo sed -i 's#{KUBECTL_TIMEOUT}#'${KUBECTL_TIMEOUT}'#g' ${HYPERCLOUD_API_SERVER_HOME}/03_hypercloud-api-server.yaml
 
 # step 3  - apply manifests
 pushd $HYPERCLOUD_API_SERVER_HOME
