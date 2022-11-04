@@ -159,6 +159,9 @@
 		- HPCD_MULTI_AGENT_VERSION
 			- hypercloud-multi-agent의 버전
 			- ex) 5.0.25.14
+		- KUBECTL_TIMEOUT
+			- 콘솔의 kubectl CLI 기능을 위한 pod 유지 시간(초)
+			- ex) 3600 (1시간)
 		- REGISTRY
 			- 폐쇄망 사용시 image repository의 주소
 			- 폐쇄망 아닐시 {REGISTRY} 그대로 유지
