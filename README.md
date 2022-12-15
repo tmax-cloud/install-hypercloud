@@ -3,6 +3,7 @@
 # hypercloud 설치 가이드
 
 ## 개요
+- 이 브랜치는 __Hypercloud 5.1 릴리즈 기준 브랜치__ 입니다. 이후 업데이트는 최신 브랜치를 참고 바랍니다.
 - hypercloud-api-server
 	- hypercloud에 필요한 API와 웹훅 및 metering, audit 등의 서비스를 제공하는 서버
 - hypercloud-single-operator
