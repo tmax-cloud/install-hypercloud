@@ -13,23 +13,20 @@
 	- multi cluster의 endpoint 및 resource health check를 위한 리소스
 
 - 이 인스톨러는 __아래에 기술된 각 모듈의 버전 혹은 그 이상의 버전에서만__ 정상 동작이 보장됩니다.
-  - hypercloud-api-server:b5.0.34.0
-  - hypercloud-single-operator:b5.0.34.0
-  - hypercloud-multi-operator:b5.0.34.0
+  - hypercloud-api-server:b5.1.0.0
+  - hypercloud-single-operator:b5.1.0.0
+  - hypercloud-multi-operator:b5.1.0.0
 
 ## 구성 요소 및 버전
 - hypercloud-api-server
-	- image: [tmaxcloudck/hypercloud-api-server:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
+	- image: [tmaxcloudck/hypercloud-api-server:b5.1.0.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-api-server)
 	- git: [https://github.com/tmax-cloud/hypercloud-api-server](https://github.com/tmax-cloud/hypercloud-api-server)
 - hypercloud-single-operator
-	- image: [tmaxcloudck/hypercloud-single-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
+	- image: [tmaxcloudck/hypercloud-single-operator:b5.1.0.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-single-operator/general)
 	- git: [https://github.com/tmax-cloud/hypercloud-single-operator](https://github.com/tmax-cloud/hypercloud-single-operator)
 - hypercloud-multi-operator
-	- image: [tmaxcloudck/hypercloud-multi-operator:b5.0.34.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
+	- image: [tmaxcloudck/hypercloud-multi-operator:b5.1.0.0](https://hub.docker.com/repository/docker/tmaxcloudck/hypercloud-multi-operator)
 	- git: [https://github.com/tmax-cloud/hypercloud-multi-operator](https://github.com/tmax-cloud/hypercloud-multi-operator)
-- hypercloud-multi-agent
-	- image: [tmaxcloudck/hypercloud-multi-agent:b5.0.25.14](https://hub.docker.com/r/tmaxcloudck/hypercloud-multi-agent)
-	- git: [https://github.com/tmax-cloud/hypercloud-multi-agent](https://github.com/tmax-cloud/hypercloud-multi-agent)
 
 ## Prerequisite
 - 필수 패키지
@@ -87,10 +84,9 @@
     ``` bash
 	$ mkdir -p ~/hypercloud-install
 	$ export HYPERCLOUD_HOME=~/hypercloud-install
-	$ export HPCD_API_SERVER_VERSION=5.0.34.0
-	$ export HPCD_SINGLE_OPERATOR_VERSION=5.0.34.0
-	$ export HPCD_MULTI_OPERATOR_VERSION=5.0.34.0
-	$ export HPCD_MULTI_AGENT_VERSION=5.0.25.14
+	$ export HPCD_API_SERVER_VERSION=5.1.0.0
+	$ export HPCD_SINGLE_OPERATOR_VERSION=5.1.0.0
+	$ export HPCD_MULTI_OPERATOR_VERSION=5.1.0.0
 	$ export HPCD_TIMESCALEDB_VERSION=5.0.0.0
 	$ cd $HYPERCLOUD_HOME
 	```
@@ -146,19 +142,16 @@
 			- ex) single / multi
 		- HPCD_SINGLE_OPERATOR_VERSION
 			- hypercloud-single-operator의 버전
-			- ex) 5.0.34.0
+			- ex) 5.1.0.0
 		- HPCD_MULTI_OPERATOR_VERSION
 			- hypercloud-multi-operator의 버전
-			- ex) 5.0.34.0
+			- ex) 5.1.0.0
 		- HPCD_API_SERVER_VERSION
 			- hypercloud-api-server의 버전
-			- ex) 5.0.34.0
+			- ex) 5.1.0.0
 		- HPCD_TIMESCALEDB_VERSION
 			- timescaledb의 버전
 			- ex) 5.0.0.0
-		- HPCD_MULTI_AGENT_VERSION
-			- hypercloud-multi-agent의 버전
-			- ex) 5.0.25.14
 		- KUBECTL_TIMEOUT
 			- 콘솔의 kubectl CLI 기능을 위한 pod 유지 시간(초)
 			- ex) 3600 (1시간)

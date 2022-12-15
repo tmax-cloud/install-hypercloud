@@ -4,7 +4,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HYPERCLOUD_API_SERVER_HOME=$SCRIPTDIR/hypercloud-api-server
 HYPERCLOUD_SINGLE_OPERATOR_HOME=$SCRIPTDIR/hypercloud-single-operator
 HYPERCLOUD_MULTI_OPERATOR_HOME=$SCRIPTDIR/hypercloud-multi-operator
-HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
+#HYPERCLOUD_MULTI_AGENT_HOME=$SCRIPTDIR/hypercloud-multi-agent
 source $SCRIPTDIR/hypercloud.config
 KUSTOMIZE_VERSION=${KUSTOMIZE_VERSION:-"v3.8.5"}
 YQ_VERSION=${YQ_VERSION:-"v4.5.0"}
@@ -192,13 +192,13 @@ pushd $HYPERCLOUD_MULTI_OPERATOR_HOME
   done
 popd
 
-pushd $HYPERCLOUD_MULTI_AGENT_HOME
-  sudo sed -i 's/{HPCD_MULTI_AGENT_VERSION}/b'${HPCD_MULTI_AGENT_VERSION}'/g'  ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
-  if [ $REGISTRY != "{REGISTRY}" ]; then
-    sudo sed -i 's#tmaxcloudck/hypercloud-multi-agent#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-agent#g' ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
-  fi
-  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/01_federate-namespace.yaml
-  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/02_federate-clusterRoleBinding.yaml
-  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
-popd
-fi
+#pushd $HYPERCLOUD_MULTI_AGENT_HOME
+#  sudo sed -i 's/{HPCD_MULTI_AGENT_VERSION}/b'${HPCD_MULTI_AGENT_VERSION}'/g'  ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+#  if [ $REGISTRY != "{REGISTRY}" ]; then
+#    sudo sed -i 's#tmaxcloudck/hypercloud-multi-agent#'${REGISTRY}'/tmaxcloudck/hypercloud-multi-agent#g' ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+#  fi
+#  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/01_federate-namespace.yaml
+#  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/02_federate-clusterRoleBinding.yaml
+#  kubectl apply -f ${HYPERCLOUD_MULTI_AGENT_HOME}/03_federate-deployment.yaml
+#popd
+#fi
